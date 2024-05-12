@@ -23,7 +23,6 @@ import MapContainer from "../../../components/map/MapContainer.vue"; // 確保�
 const dialogStore = useDialogStore();
 const adminStore = useAdminStore();
 const MapStore = useMapStore();
-const contentStore = useContentStore();
 
 const props = defineProps(["searchParams"]);
 
@@ -49,8 +48,6 @@ function handleClose() {
 
 // Method to toggle map layer
 function handleToggleMapLayer(test) {
-	console.log(test);
-
 	var paintTemp = test[0].paint;
 	var propertyTemp = test[0].property;
 	test[0].paint = JSON.parse(paintTemp);

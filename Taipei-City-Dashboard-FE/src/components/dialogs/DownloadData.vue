@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed } from "vue";
 import { useDialogStore } from "../../store/dialogStore";
 
 import { jsonToCsv } from "../../assets/utilityFunctions/jsonToCsv";
@@ -67,24 +67,6 @@ try {
 } catch (error) {
 	dataContent.value = "Error parsing JSON from URI: " + error.message;
 }
-
-const parsedJson2 = computed(() => {
-	let json = {
-		data: dialogStore.moreInfoContent.chart_data,
-		categories: dialogStore.moreInfoContent.chart_config.categories || [],
-	};
-	// Encode the entire JSON object as a URI component
-	return encodeURIComponent(JSON.stringify(json));
-});
-
-const displayJson = computed(() => {
-	try {
-		const decodedJson = decodeURIComponent(parsedJson.value);
-		return JSON.stringify(JSON.parse(decodedJson), null, 2);
-	} catch (e) {
-		return `Error decoding JSON data: ${e.message}`;
-	}
-});
 
 const displayContent = computed(() => {
 	if (fileType.value === "JSON") {

@@ -79,7 +79,6 @@ export const useMapStore = defineStore("map", {
 					[121.3870596781498, 24.95733863075891], // Southwest coordinates
 					[121.6998231749096, 25.21179993640203], // Northeast coordinates
 				]);
-				console.log("Successfully set new center: ", centerCoordinates);
 			} else {
 				console.error("Invalid coordinates or map is not initialized");
 			}
@@ -343,7 +342,6 @@ export const useMapStore = defineStore("map", {
 			}
 
 			const lngLat = { lng: coordinates[0], lat: coordinates[1] };
-			console.log("Showing popup at:", lngLat);
 
 			if (this.map) {
 				// this.map.flyTo({ center: lngLat, zoom: 15 });
@@ -534,16 +532,8 @@ export const useMapStore = defineStore("map", {
 			axios
 				.get(`/mapData/${map_config.index}.geojson`)
 				.then((response) => {
-					console.log("Loaded GeoJSON Data:", response.data); // 日誌輸出加載的數據
 					this.addGeojsonSource(map_config, response.data);
-					// if (
-					// 	this.map.getLayoutProperty(
-					// 		`${map_config.layerId}`,
-					// 		"visibility"
-					// 	) === "visible"
-					// ) {
 					this.storePoints(response.data, response.data);
-					// 	}
 				})
 				.catch((e) => console.error(e));
 		},
@@ -594,7 +584,6 @@ export const useMapStore = defineStore("map", {
 					sourceLayerId: layerId, // Store source layer ID for reference
 				}))
 			);
-			console.log("Stored Points Data:", this.allPoints); // Log the stored points data for verification
 		},
 
 		// 3-1. Add a local geojson as a source in mapbox
