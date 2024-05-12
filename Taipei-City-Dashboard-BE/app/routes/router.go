@@ -26,6 +26,16 @@ func ConfigureRoutes() {
 	configureComponentRoutes()
 	configureDashboardRoutes()
 	configureIssueRoutes()
+
+	configureTestRoutes()
+	// test routes
+}
+
+
+// configureTestRoutes configures all test routes.
+func configureTestRoutes() {
+    testRoutes := RouterGroup.Group("/test")
+    testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
 }
 
 func configureAuthRoutes() {

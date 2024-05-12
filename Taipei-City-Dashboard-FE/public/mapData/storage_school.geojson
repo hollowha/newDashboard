@@ -1,0 +1,379 @@
+{
+   "type": "FeatureCollection",
+   "features": [
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.4980914,25.03106258 ]
+    },
+    "properties": {
+    "行政區":"萬華區",
+    "場所名稱":"雙園國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5053458,25.03581608 ]
+    },
+    "properties": {
+    "行政區":"萬華區",
+    "場所名稱":"龍山國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5153256,25.03767217 ]
+    },
+    "properties": {
+    "行政區":"中正區",
+    "場所名稱":"弘道國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5155662,25.03636811 ]
+    },
+    "properties": {
+    "行政區":"中正區",
+    "場所名稱":"市大附小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5433368,25.06369419 ]
+    },
+    "properties": {
+    "行政區":"中山區",
+    "場所名稱":"五常國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5267129,25.06231186 ]
+    },
+    "properties": {
+    "行政區":"中山區",
+    "場所名稱":"新興國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5082807,25.05195092 ]
+    },
+    "properties": {
+    "行政區":"大同區",
+    "場所名稱":"忠孝國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5185863,25.05182517 ]
+    },
+    "properties": {
+    "行政區":"大同區",
+    "場所名稱":"建成國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5436272,24.99673863 ]
+    },
+    "properties": {
+    "行政區":"文山區",
+    "場所名稱":"景興國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5483426,24.99654869 ]
+    },
+    "properties": {
+    "行政區":"文山區",
+    "場所名稱":"景興國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5386178,25.02462932 ]
+    },
+    "properties": {
+    "行政區":"大安區",
+    "場所名稱":"龍門國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5349789,25.03733826 ]
+    },
+    "properties": {
+    "行政區":"大安區",
+    "場所名稱":"幸安國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5388082,25.01145217 ]
+    },
+    "properties": {
+    "行政區":"大安區",
+    "場所名稱":"民族國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5667209,25.05986902 ]
+    },
+    "properties": {
+    "行政區":"松山區",
+    "場所名稱":"民生國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5616827,25.04996447 ]
+    },
+    "properties": {
+    "行政區":"松山區",
+    "場所名稱":"中崙高中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5683079,25.0258267 ]
+    },
+    "properties": {
+    "行政區":"信義區",
+    "場所名稱":"吳興國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5722415,25.03583772 ]
+    },
+    "properties": {
+    "行政區":"信義區",
+    "場所名稱":"興雅國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5709894,25.03614109 ]
+    },
+    "properties": {
+    "行政區":"信義區",
+    "場所名稱":"博愛國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5677459,25.02904927 ]
+    },
+    "properties": {
+    "行政區":"信義區",
+    "場所名稱":"信義國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.6193995,25.03990907 ]
+    },
+    "properties": {
+    "行政區":"南港區",
+    "場所名稱":"舊莊國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5876562,25.04520412 ]
+    },
+    "properties": {
+    "行政區":"南港區",
+    "場所名稱":"成德國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.6108691,25.05781086 ]
+    },
+    "properties": {
+    "行政區":"南港區",
+    "場所名稱":"南港國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5723504,25.08318627 ]
+    },
+    "properties": {
+    "行政區":"內湖區",
+    "場所名稱":"麗山國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5911557,25.08538235 ]
+    },
+    "properties": {
+    "行政區":"內湖區",
+    "場所名稱":"碧湖國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.6161134,25.06904386 ]
+    },
+    "properties": {
+    "行政區":"內湖區",
+    "場所名稱":"東湖國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5298888,25.09823528 ]
+    },
+    "properties": {
+    "行政區":"士林區",
+    "場所名稱":"福林國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5298906,25.09826811 ]
+    },
+    "properties": {
+    "行政區":"士林區",
+    "場所名稱":"士林國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5555902,25.10365488 ]
+    },
+    "properties": {
+    "行政區":"士林區",
+    "場所名稱":"至善國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.4879243,25.10340355 ]
+    },
+    "properties": {
+    "行政區":"士林區",
+    "場所名稱":"福安國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5464422,25.13102718 ]
+    },
+    "properties": {
+    "行政區":"士林區",
+    "場所名稱":"格致國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.50636,25.13839968 ]
+    },
+    "properties": {
+    "行政區":"北投區",
+    "場所名稱":"新民國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5052051,25.13840084 ]
+    },
+    "properties": {
+    "行政區":"北投區",
+    "場所名稱":"逸仙國小"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.4773308,25.13474478 ]
+    },
+    "properties": {
+    "行政區":"北投區",
+    "場所名稱":"桃源國中"
+    }
+  },
+  {
+    "type": "Feature",
+    "geometry": {
+       "type": "Point",
+       "coordinates":  [ 121.5001639,25.13426611 ]
+    },
+    "properties": {
+    "行政區":"北投區",
+    "場所名稱":"北投國小"
+    }
+  }
+]
+}

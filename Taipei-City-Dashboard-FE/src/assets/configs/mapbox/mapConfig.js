@@ -1,5 +1,19 @@
 // Initial Position and Settings
-export const MapObjectConfig = {
+// export const MapObjectConfig = {
+// 	antialias: true,
+// 	container: "mapboxBox",
+// 	center: [121.536609, 25.044808],
+// 	maxBounds: [
+// 		[121.3870596781498, 24.95733863075891], // Southwest coordinates
+// 		[121.6998231749096, 25.21179993640203], // Northeast coordinates
+// 	],
+// 	zoom: 12.5,
+// 	minZoom: 11,
+// 	maxZoom: 22,
+// 	projection: "globe", // display the map as a 3D globe
+// };
+
+export let MapObjectConfig = {
 	antialias: true,
 	container: "mapboxBox",
 	center: [121.536609, 25.044808],
@@ -87,7 +101,7 @@ export const TaipeiVillage = {
 export const TaipeiBuilding = {
 	id: "taipei_building_3d",
 	source: "taipei_building_3d_source",
-	"source-layer": "tp_building_height84-18p8j0",
+	"source-layer": "tp_building_height84-56r4k7",
 	type: "fill-extrusion",
 	minzoom: 14,
 	paint: {

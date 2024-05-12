@@ -16,14 +16,26 @@ import { useContentStore } from "../store/contentStore";
 import { useDialogStore } from "../store/dialogStore";
 import { useAuthStore } from "../store/authStore";
 
+import { useMapStore } from "../store/mapStore";
+
 import HistoryChart from "../components/charts/HistoryChart.vue";
 import ReportIssue from "../components/dialogs/ReportIssue.vue";
 import DownloadData from "../components/dialogs/DownloadData.vue";
 import EmbedComponent from "../components/dialogs/EmbedComponent.vue";
 
+import MapContainer from "../components/map/MapContainer.vue"; // 確保路徑正確
+
 const contentStore = useContentStore();
 const dialogStore = useDialogStore();
 const authStore = useAuthStore();
+
+const mapStore = useMapStore();
+
+// const newsData = ref([])
+// import axios from "axios";
+
+// const API_KEY = "3ec412d0719045628bcd2762a2e01f1a"; // Place your API key here
+// const NEWS_API_URL = `https://newsapi.org/v2/top-headlines`;
 
 const searchParams = ref({
 	searchbyindex: "",
@@ -34,6 +46,17 @@ const searchParams = ref({
 	pagenum: 1,
 });
 
+// const parseMapLayers = computed(() => {
+// 	const hasMap = contentStore.currentDashboard.components?.filter(
+// 		(item) => item.map_config[0]
+// 	);
+// 	const noMap = contentStore.currentDashboard.components?.filter(
+// 		(item) => !item.map_config[0]
+// 	);
+
+// 	return { hasMap: hasMap, noMap: noMap };
+// });
+
 function toggleFavorite(id) {
 	if (contentStore.favorites.components.includes(id)) {
 		contentStore.unfavoriteComponent(id);
@@ -42,210 +65,317 @@ function toggleFavorite(id) {
 	}
 }
 
+function toggleMapLayer(test) {
+	console.log(test[0]);
+
+	mapStore.addToMapLayerList(test[0].map_config);
+
+	// console.log(test.map_config); // Check what's being received
+	// if (test.map_config) {
+	// 	mapStore.addToMapLayerList(map_config);
+	// } else {
+	// 	console.log("No map config found");
+	// }
+}
+
 onMounted(() => {
 	contentStore.getAllComponents(searchParams.value);
+	// if (
+	// 	dialogStore.moreInfoContent &&
+	// 	dialogStore.moreInfoContent.map_config &&
+	// 	dialogStore.moreInfoContent.map_config[0]
+	// ) {
+	// 	toggleMapLayer(
+	// 		contentStore.currentDashboard.components.filter(
+	// 			(item) => item.id === dialogStore.moreInfoContent.id
+	// 		)
+	// 	);
+	// }
 });
 </script>
 
 <template>
-  <!-- Button to navigate back to /component -->
-  <div class="componentinfoview-header">
-    <button
-      v-if="
-        authStore.isMobileDevice ||
-          authStore.isNarrowDevice ||
-          !authStore.token
-      "
-      @click="router.back()"
-    >
-      <span>arrow_circle_left</span>
-      <p>返回儀表板</p>
-    </button>
-    <RouterLink
-      v-else
-      to="/component"
-    >
-      <span>arrow_circle_left</span>
-      <p>返回組件瀏覽平台</p>
-    </RouterLink>
-  </div>
+	<!-- Button to navigate back to /component -->
+	<div class="componentinfoview-header">
+		<button
+			v-if="
+				authStore.isMobileDevice ||
+				authStore.isNarrowDevice ||
+				!authStore.token
+			"
+			@click="router.back()"
+		>
+			<span>arrow_circle_left</span>
+			<p>返回儀表板</p>
+		</button>
+		<RouterLink v-else to="/component">
+			<span>arrow_circle_left</span>
+			<p>返回組件瀏覽平台</p>
+		</RouterLink>
+	</div>
 
-  <!-- 1. If the component is found -->
-  <div
-    v-if="dialogStore.moreInfoContent"
-    :class="{
-      componentinfoview: true,
-      'no-history': !dialogStore.moreInfoContent.history_data,
-    }"
-  >
-    <!-- 1-1. View the entire component and its chart data -->
-    <div class="componentinfoview-component">
-      <DashboardComponent
-        :key="dialogStore.moreInfoContent.index"
-        :config="dialogStore.moreInfoContent"
-        :style="{ height: '350px', width: '400px' }"
-        :add-btn="
-          !contentStore.editDashboard.components
-            .map((item) => item.id)
-            .includes(dialogStore.moreInfoContent.id)
-        "
-        :favorite-btn="true"
-        :is-favorite="
-          contentStore.favorites?.components.includes(
-            dialogStore.moreInfoContent.id
-          )
-        "
-        @add="
-          (id, name) => {
-            contentStore.editDashboard.components.push({
-              id,
-              name,
-            });
-          }
-        "
-        @favorite="
-          (id) => {
-            toggleFavorite(id);
-          }
-        "
-      />
-    </div>
-    <!-- 1-2. View the component's information -->
-    <div class="componentinfoview-content">
-      <div :style="{ overflowY: 'scroll' }">
-        <h3>組件 ID | Index</h3>
-        <p>
-          {{
-            ` ID: ${dialogStore.moreInfoContent.id}｜Index: ${dialogStore.moreInfoContent.index} `
-          }}
-        </p>
-        <h3>組件說明</h3>
-        <p>{{ dialogStore.moreInfoContent.long_desc }}</p>
-        <h3>範例情境</h3>
-        <p>{{ dialogStore.moreInfoContent.use_case }}</p>
-      </div>
-      <div class="componentinfoview-content-control">
-        <button
-          v-if="authStore.token"
-          @click="
-            dialogStore.showReportIssue(
-              dialogStore.moreInfoContent.id,
-              dialogStore.moreInfoContent.index,
-              dialogStore.moreInfoContent.name
-            )
-          "
-        >
-          <span>flag</span>回報
-        </button>
-        <button
-          v-if="
-            dialogStore.moreInfoContent.chart_config.types[0] !==
-              'MetroChart'
-          "
-          @click="dialogStore.showDialog('downloadData')"
-        >
-          <span>download</span>下載
-        </button>
-        <button @click="dialogStore.showDialog('embedComponent')">
-          <span>code</span>內嵌
-        </button>
-      </div>
-    </div>
-    <!-- 1-3. View the component's history data -->
-    <div
-      v-if="dialogStore.moreInfoContent.history_data"
-      class="componentinfoview-history"
-    >
-      <h3>歷史資料</h3>
-      <HistoryChart
-        :chart_config="dialogStore.moreInfoContent.chart_config"
-        :series="dialogStore.moreInfoContent.history_data"
-        :history_config="dialogStore.moreInfoContent.history_config"
-      />
-    </div>
-    <!-- 1-4. View the component's source links and contributors -->
-    <div
-      :class="{
-        'componentinfoview-source': true,
-        'no-links': !dialogStore.moreInfoContent.links[0],
-      }"
-    >
-      <div
-        v-if="dialogStore.moreInfoContent.links[0]"
-        class="componentinfoview-source-links"
-      >
-        <h3>相關資料</h3>
-        <a
-          v-for="(link, index) in dialogStore.moreInfoContent.links"
-          :key="`${link}-${index}`"
-          :href="link"
-          target="_blank"
-          rel="noreferrer"
-        ><div>{{ index + 1 }}</div>
-          <p>{{ link }}</p></a>
-      </div>
-      <div
-        v-if="dialogStore.moreInfoContent.contributors"
-        class="componentinfoview-source-contributors"
-      >
-        <h3>協作者</h3>
-        <div>
-          <div
-            v-for="contributor in dialogStore.moreInfoContent
-              .contributors"
-            :key="contributor"
-          >
-            <a
-              :href="contentStore.contributors[contributor].link"
-              target="_blank"
-              rel="noreferrer"
-            ><img
-               :src="`/images/contributors/${
-                 contentStore.contributors[contributor].image
-                   ? contentStore.contributors[
-                     contributor
-                     // eslint-disable-next-line no-mixed-spaces-and-tabs
-                   ].image
-                   : contributor
-               }.png`"
-               :alt="`協作者-${contentStore.contributors[contributor].name}`"
-             >
-              <p>
-                {{
-                  contentStore.contributors[contributor].name
-                }}
-              </p>
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <ReportIssue />
-    <DownloadData />
-    <EmbedComponent />
-  </div>
-  <!-- 2. If the page is still loading -->
-  <div
-    v-else-if="contentStore.loading"
-    class="componentinfoview componentinfoview-nodashboard"
-  >
-    <div class="componentinfoview-nodashboard-content">
-      <div />
-    </div>
-  </div>
-  <!-- 3. If the component is not found or an error happened -->
-  <div
-    v-else
-    class="componentinfoview componentinfoview-nodashboard"
-  >
-    <div class="componentinfoview-nodashboard-content">
-      <span>sentiment_very_dissatisfied</span>
-      <h2>發生錯誤，無法載入。請確認組件Index是否正確。</h2>
-    </div>
-  </div>
+	<!-- 1. If the component is found -->
+	<div></div>
+
+	<div
+		v-if="dialogStore.moreInfoContent"
+		:class="{
+			componentinfoview: true,
+			'no-history': !dialogStore.moreInfoContent.history_data,
+		}"
+	>
+		<!-- 1-1. View the entire component and its chart data -->
+		<div class="componentinfoview-component">
+			<DashboardComponent
+				:key="dialogStore.moreInfoContent.index"
+				:config="dialogStore.moreInfoContent"
+				:style="{ height: '350px', width: '400px' }"
+				:add-btn="
+					!contentStore.editDashboard.components
+						.map((item) => item.id)
+						.includes(dialogStore.moreInfoContent.id)
+				"
+				:favorite-btn="true"
+				:is-favorite="
+					contentStore.favorites?.components.includes(
+						dialogStore.moreInfoContent.id
+					)
+				"
+				@add="
+					(id, name) => {
+						contentStore.editDashboard.components.push({
+							id,
+							name,
+						});
+					}
+				"
+				@favorite="
+					(id) => {
+						toggleFavorite(id);
+					}
+				"
+			/>
+		</div>
+		<!-- 1-2. View the component's information -->
+		<div class="componentinfoview-content">
+			<div :style="{ overflowY: 'scroll' }">
+				<h3>組件 ID | Index</h3>
+				<p>
+					{{
+						` ID: ${dialogStore.moreInfoContent.id}｜Index: ${dialogStore.moreInfoContent.index} `
+					}}
+				</p>
+				<h3>組件說明</h3>
+				<p>{{ dialogStore.moreInfoContent.long_desc }}</p>
+				<h3>範例情境</h3>
+				<p>{{ dialogStore.moreInfoContent.use_case }}</p>
+			</div>
+			<div class="componentinfoview-content-control">
+				<button
+					v-if="authStore.token"
+					@click="
+						dialogStore.showReportIssue(
+							dialogStore.moreInfoContent.id,
+							dialogStore.moreInfoContent.index,
+							dialogStore.moreInfoContent.name
+						)
+					"
+				>
+					<span>flag</span>回報
+				</button>
+				<button
+					v-if="
+						dialogStore.moreInfoContent.chart_config.types[0] !==
+						'MetroChart'
+					"
+					@click="dialogStore.showDialog('downloadData')"
+				>
+					<span>download</span>下載
+				</button>
+				<button @click="dialogStore.showDialog('embedComponent')">
+					<span>code</span>內嵌
+				</button>
+			</div>
+		</div>
+		<!-- 1-3. View the component's history data -->
+		<div
+			v-if="dialogStore.moreInfoContent.history_data"
+			class="componentinfoview-history"
+		>
+			<h3>歷史資料</h3>
+			<HistoryChart
+				:chart_config="dialogStore.moreInfoContent.chart_config"
+				:series="dialogStore.moreInfoContent.history_data"
+				:history_config="dialogStore.moreInfoContent.history_config"
+			/>
+		</div>
+		<!-- 1-4. View the component's source links and contributors -->
+		<div
+			:class="{
+				'componentinfoview-source': true,
+				'no-links': !dialogStore.moreInfoContent.links[0],
+			}"
+		>
+			<div
+				v-if="dialogStore.moreInfoContent.links[0]"
+				class="componentinfoview-source-links"
+			>
+				<h3>相關資料</h3>
+				<a
+					v-for="(link, index) in dialogStore.moreInfoContent.links"
+					:key="`${link}-${index}`"
+					:href="link"
+					target="_blank"
+					rel="noreferrer"
+					><div>{{ index + 1 }}</div>
+					<p>{{ link }}</p></a
+				>
+
+				<!-- News API -->
+			</div>
+			<div
+				v-if="dialogStore.moreInfoContent.contributors"
+				class="componentinfoview-source-contributors"
+			>
+				<h3>協作者</h3>
+				<div>
+					<div
+						v-for="contributor in dialogStore.moreInfoContent
+							.contributors"
+						:key="contributor"
+					>
+						<a
+							:href="contentStore.contributors[contributor].link"
+							target="_blank"
+							rel="noreferrer"
+							><img
+								:src="`/images/contributors/${
+									contentStore.contributors[contributor].image
+										? contentStore.contributors[
+												contributor
+												// eslint-disable-next-line no-mixed-spaces-and-tabs
+										  ].image
+										: contributor
+								}.png`"
+								:alt="`協作者-${contentStore.contributors[contributor].name}`"
+							/>
+							<p>
+								{{
+									contentStore.contributors[contributor].name
+								}}
+							</p>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 地圖測試 -->
+		<div
+			v-if="
+				dialogStore.moreInfoContent.map_config &&
+				dialogStore.moreInfoContent.map_config[0]
+			"
+			class="maptest"
+		>
+			<h3>地圖預覽</h3>
+			<MapContainer />
+			<button
+				@click="
+					toggleMapLayer(
+						contentStore.currentDashboard.components.filter(
+							(item) => item.id === dialogStore.moreInfoContent.id
+						)
+					)
+				"
+				class="maptest-button"
+			>
+				渲染預覽
+			</button>
+		</div>
+
+		<ReportIssue />
+		<DownloadData />
+		<EmbedComponent />
+	</div>
+
+	<!-- 2. If the page is still loading -->
+	<div
+		v-else-if="contentStore.loading"
+		class="componentinfoview componentinfoview-nodashboard"
+	>
+		<div class="componentinfoview-nodashboard-content">
+			<div />
+		</div>
+	</div>
+	<!-- 3. If the component is not found or an error happened -->
+	<div v-else class="componentinfoview componentinfoview-nodashboard">
+		<div class="componentinfoview-nodashboard-content">
+			<span>sentiment_very_dissatisfied</span>
+			<h2>發生錯誤，無法載入。請確認組件Index是否正確。</h2>
+		</div>
+	</div>
+
+	<!-- <div class="componentinfoview"> -->
+	<!-- <div class="mapdiv">
+		<div
+			v-if="
+				dialogStore.moreInfoContent.map_config &&
+				dialogStore.moreInfoContent.map_config[0]
+			"
+			class="maptest"
+		>
+			<h3>地圖測試</h3>
+			<MapContainer />
+			<button
+				@click="
+					toggleMapLayer(
+						contentStore.currentDashboard.components.filter(
+							(item) => item.id === dialogStore.moreInfoContent.id
+						)
+					)
+				"
+				class="maptest-button"
+			>
+				測試渲染
+			</button>
+		</div>
+	</div> -->
 </template>
 
 <style scoped lang="scss">
+.mapdiv {
+	padding: var(--dashboardcomponent-font-m);
+	width: 100%;
+}
+
+.maptest {
+	padding: var(--dashboardcomponent-font-m);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-radius: 5px;
+	background-color: var(--color-component-background);
+	width: calc(300% - 10px);
+	max-width: calc(95vw - 20px);
+	//overflow-y: scroll;
+	overflow-x: hidden;
+	height: 60vh;
+}
+
+.maptest-button {
+	align-self: center;
+	margin-top: 10px;
+	padding: 4px 8px;
+	border-radius: 5px;
+	background-color: var(--color-highlight);
+	font-size: var(--font-ms);
+	transition: opacity 0.2s;
+
+	&:hover {
+		opacity: 0.8;
+	}
+}
+
 .componentinfoview {
 	width: calc(100% - 26px);
 	max-width: 1300px;
@@ -254,6 +384,7 @@ onMounted(() => {
 	display: grid;
 	grid-template-columns: 400px 400px 400px;
 	grid-template-rows: 386px max-content max-content;
+	//grid-template-rows: auto 1fr auto;
 	grid-template-areas:
 		"info content source"
 		"history history history";

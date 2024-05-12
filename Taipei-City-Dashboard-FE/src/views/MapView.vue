@@ -11,7 +11,7 @@ Testing: Jack Huang (Data Scientist), Ian Huang (Data Analysis Intern)
 <!-- Map charts will be hidden in mobile mode and be replaced with the mobileLayers dialog -->
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { DashboardComponent } from "city-dashboard-component";
 import { useContentStore } from "../store/contentStore";
 import { useDialogStore } from "../store/dialogStore";
@@ -24,6 +24,8 @@ import ReportIssue from "../components/dialogs/ReportIssue.vue";
 const contentStore = useContentStore();
 const dialogStore = useDialogStore();
 const mapStore = useMapStore();
+
+const currentPosition = ref(null);
 
 // Separate components with maps from those without
 const parseMapLayers = computed(() => {
@@ -72,6 +74,116 @@ function shouldDisable(map_config) {
 			.length > 0
 	);
 }
+
+///
+
+const maxBounds = [
+	[121.3870596781498, 24.95733863075891], // Southwest coordinates
+	[121.6998231749096, 25.21179993640203], // Northeast coordinates
+];
+
+function isInBounds(latitude, longitude) {
+	const [sw, ne] = maxBounds;
+	return (
+		latitude >= sw[1] &&
+		latitude <= ne[1] &&
+		longitude >= sw[0] &&
+		longitude <= ne[0]
+	);
+}
+
+function updateMapCenter() {
+	// 嘗試從localStorage獲取緩存的位置數據
+	const cachedPosition = localStorage.getItem("geoPosition");
+	if (cachedPosition) {
+		const { latitude, longitude } = JSON.parse(cachedPosition);
+		if (isInBounds(latitude, longitude)) {
+			dialogStore.showNotification(
+				"info",
+				"您的位置在台北市範圍內，使用緩存的位置數據自動定位中心"
+			);
+
+			setTimeout(() => {
+				mapStore.setMapCenter([longitude, latitude]);
+			}, 1000);
+
+			mapStore.displayCurrentLocationMarker([longitude, latitude]);
+
+			return; // 由於使用了緩存的位置數據，這裡返回以避免進行不必要的位置請求
+		}
+	}
+
+	// 如果沒有緩存的位置數據或緩存的數據不在範圍內，則請求當前位置
+	if ("geolocation" in navigator) {
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				const { latitude, longitude } = position.coords;
+				// 緩存當前位置
+				localStorage.setItem(
+					"geoPosition",
+					JSON.stringify({ latitude, longitude })
+				);
+
+				if (isInBounds(latitude, longitude)) {
+					dialogStore.showNotification(
+						"info",
+						"您的位置在台北市範圍內，自動定位中心"
+					);
+					setTimeout(() => {
+						mapStore.setMapCenter([longitude, latitude]);
+					}, 1000);
+				} else {
+					dialogStore.showNotification(
+						"info",
+						"您的位置不在台北市範圍內，無法自動定位"
+					);
+				}
+			},
+			(error) => {
+				console.error("Geolocation error: ", error);
+			}
+		);
+	} else {
+		console.error("Geolocation is not supported by this browser.");
+	}
+}
+
+function updateCurrentPosition() {
+	const cachedPosition = localStorage.getItem("geoPosition");
+	if (cachedPosition) {
+		currentPosition.value = JSON.parse(cachedPosition);
+	} else if ("geolocation" in navigator) {
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				const { latitude, longitude } = position.coords;
+				currentPosition.value = { latitude, longitude };
+				localStorage.setItem(
+					"geoPosition",
+					JSON.stringify(currentPosition.value)
+				);
+			},
+			(error) => {
+				console.error("Geolocation error: ", error);
+			}
+		);
+	}
+}
+
+function findAndShowNearest() {
+	if (currentPosition.value) {
+		mapStore.findNearestPoint([
+			currentPosition.value.longitude,
+			currentPosition.value.latitude,
+		]);
+	} else {
+		console.error("Current position is not set.");
+	}
+}
+
+onMounted(() => {
+	updateMapCenter();
+	updateCurrentPosition();
+});
 </script>
 
 <template>
@@ -268,12 +380,54 @@ function shouldDisable(map_config) {
 			</div>
 		</div>
 		<MapContainer />
+
 		<MoreInfo />
 		<ReportIssue />
+
+		<button @click="findAndShowNearest" class="test-button">
+			距離當前位置最近點
+		</button>
+
+		<!-- <button
+			@click="mapStore.displayCurrentLocationMarker(currentPosition)"
+			class="test-button2"
+		>
+			當前位置
+		</button> -->
 	</div>
 </template>
 
 <style scoped lang="scss">
+.test-button {
+	position: fixed; /* Keeps the button fixed in position */
+	bottom: 20px; /* Distance from the bottom of the screen */
+	right: 20px; /* Distance from the left of the screen */
+	z-index: 1000; /* Ensures the button stays on top of other elements */
+	background-color: var(
+		--color-highlight
+	); /* Sets the background color to blue */
+	color: white; /* Sets the text color to white */
+	height: 50px; /* Height of the button */
+	width: 100px; /* Width of the button */
+	border: none; /* No borders */
+	border-radius: 5px; /* Rounded corners */
+}
+
+.test-button2 {
+	position: fixed; /* Keeps the button fixed in position */
+	bottom: 20px; /* Distance from the bottom of the screen */
+	right: 100px; /* Distance from the left of the screen */
+	z-index: 1000; /* Ensures the button stays on top of other elements */
+	background-color: var(
+		--color-highlight
+	); /* Sets the background color to blue */
+	color: white; /* Sets the text color to white */
+	height: 50px; /* Height of the button */
+	width: 100px; /* Width of the button */
+	border: none; /* No borders */
+	border-radius: 5px; /* Rounded corners */
+}
+
 .map {
 	height: calc(100vh - 127px);
 	height: calc(var(--vh) * 100 - 127px);

@@ -23,6 +23,8 @@ import MapPopup from "../components/map/MapPopup.vue";
 
 // Utility Functions or Configs
 import mapStyle from "../assets/configs/mapbox/mapStyle.js";
+
+import * as turf from "@turf/turf";
 import {
 	MapObjectConfig,
 	TaipeiTown,
@@ -55,11 +57,304 @@ export const useMapStore = defineStore("map", {
 		savedLocations: savedLocations,
 		// Store currently loading layers,
 		loadingLayers: [],
+		allPoints: [], // This will store features from various GeoJSON files
+		currentLocationMarker: null, // Stores the current location marker instance
 	}),
 	getters: {},
 	actions: {
 		/* Initialize Mapbox */
 		// 1. Creates the mapbox instance and passes in initial configs
+		// 3. Set the map center to a new location
+		setMapCenter(centerCoordinates, zoomLevel = 13.9) {
+			// 可以設定一個默認的縮放級別，比如 15
+			if (this.map && centerCoordinates.length === 2) {
+				// 使用 flyTo 方法來更新中心點和縮放級別
+				this.map.flyTo({
+					center: centerCoordinates,
+					zoom: zoomLevel, // 縮放級別可以是任何您需要的值，這裡設為 15
+					essential: true, // 這個選項是為了在使用 CSS transform 改變地圖大小時保證動畫正常執行
+				});
+
+				this.map.setMaxBounds([
+					[121.3870596781498, 24.95733863075891], // Southwest coordinates
+					[121.6998231749096, 25.21179993640203], // Northeast coordinates
+				]);
+				console.log("Successfully set new center: ", centerCoordinates);
+			} else {
+				console.error("Invalid coordinates or map is not initialized");
+			}
+		},
+
+		// findNearestPoint(currentLocation) {
+		// 	if (this.allPoints.length === 0) {
+		// 		console.error("No points available to find the nearest.");
+		// 		return null;
+		// 	}
+		// 	const pointsFeatureCollection = turf.featureCollection(
+		// 		this.allPoints
+		// 	);
+		// 	const nearest = turf.nearestPoint(
+		// 		turf.point(currentLocation),
+		// 		pointsFeatureCollection
+		// 	);
+		// 	if (nearest) {
+		// 		this.showPopupAtPoint(nearest);
+		// 	}
+		// 	return nearest;
+		// },
+
+		// findNearestPoint(currentLocation) {
+		// 	if (this.allPoints.length === 0) {
+		// 		console.error("No points available to find the nearest.");
+		// 		return null;
+		// 	}
+		// 	const pointsFeatureCollection = turf.featureCollection(
+		// 		this.allPoints.map((feature) => ({
+		// 			type: "Feature",
+		// 			geometry: {
+		// 				type: "circle",
+		// 				coordinates: [
+		// 					feature.coordinates.longitude,
+		// 					feature.coordinates.latitude,
+		// 				],
+		// 			},
+		// 			properties: feature.properties,
+		// 		}))
+		// 	);
+
+		// 	const nearest = turf.nearestPoint(
+		// 		turf.point(currentLocation),
+		// 		pointsFeatureCollection
+		// 	);
+		// 	if (nearest) {
+		// 		this.showPopupAtPoint(nearest);
+		// 	}
+		// 	return nearest;
+		// },
+
+		// findNearestPoint(currentLocation) {
+		// 	if (
+		// 		!currentLocation ||
+		// 		currentLocation.length < 2 ||
+		// 		isNaN(currentLocation[0]) ||
+		// 		isNaN(currentLocation[1])
+		// 	) {
+		// 		console.error(
+		// 			"Invalid or missing coordinates",
+		// 			currentLocation
+		// 		);
+		// 		return null;
+		// 	}
+
+		// 	if (this.allPoints.length === 0) {
+		// 		console.error("No points available to find the nearest.");
+		// 		return null;
+		// 	}
+
+		// 	const pointsFeatureCollection = turf.featureCollection(
+		// 		this.allPoints.map((feature) => ({
+		// 			type: "Feature",
+		// 			geometry: {
+		// 				type: "Point",
+		// 				coordinates: [
+		// 					feature.coordinates.longitude,
+		// 					feature.coordinates.latitude,
+		// 				],
+		// 			},
+		// 			properties: feature.properties,
+		// 		}))
+		// 	);
+
+		// 	const nearest = turf.nearestPoint(
+		// 		turf.point(currentLocation),
+		// 		pointsFeatureCollection
+		// 	);
+		// 	if (nearest) {
+		// 		this.showPopupAtPoint(nearest);
+		// 	}
+		// 	return nearest;
+		// },
+
+		// findNearestPoint(currentLocation) {
+		// 	if (
+		// 		!currentLocation ||
+		// 		currentLocation.length < 2 ||
+		// 		isNaN(currentLocation[0]) ||
+		// 		isNaN(currentLocation[1])
+		// 	) {
+		// 		console.error(
+		// 			"Invalid or missing coordinates",
+		// 			currentLocation
+		// 		);
+		// 		return null;
+		// 	}
+
+		// 	if (this.allPoints.length === 0) {
+		// 		console.error("No points available to find the nearest.");
+		// 		return null;
+		// 	}
+
+		// 	console.log("Current Location:", currentLocation);
+		// 	console.log("All Points:", this.allPoints);
+
+		// 	const pointsFeatureCollection = turf.featureCollection(
+		// 		this.allPoints.map((feature) => ({
+		// 			type: "Feature",
+		// 			geometry: {
+		// 				type: "Point",
+		// 				coordinates: feature.coordinates,
+		// 			},
+		// 			properties: feature.properties,
+		// 		}))
+		// 	);
+
+		// 	const nearest = turf.nearestPoint(
+		// 		turf.point(currentLocation),
+		// 		pointsFeatureCollection
+		// 	);
+		// 	console.log("Nearest Feature:", nearest);
+		// 	if (nearest) {
+		// 		this.showPopupAtPoint(nearest);
+		// 	}
+		// 	return nearest;
+		// },
+
+		findNearestPoint(currentLocation) {
+			if (
+				!currentLocation ||
+				currentLocation.length < 2 ||
+				isNaN(currentLocation[0]) ||
+				isNaN(currentLocation[1])
+			) {
+				console.error(
+					"Invalid or missing coordinates",
+					currentLocation
+				);
+				return null;
+			}
+
+			if (this.allPoints.length === 0) {
+				console.error("No points available to find the nearest.");
+				return null;
+			}
+
+			// Display a marker for the current location
+
+			const pointsFeatureCollection = turf.featureCollection(
+				this.allPoints.map((feature) => ({
+					type: "Feature",
+					geometry: {
+						type: "Point",
+						coordinates: feature.coordinates,
+					},
+					properties: feature.properties,
+				}))
+			);
+
+			const nearest = turf.nearestPoint(
+				turf.point(currentLocation),
+				pointsFeatureCollection
+			);
+
+			if (this.currentLocationMarker) {
+				this.currentLocationMarker.remove();
+			}
+
+			if (nearest) {
+				this.showPopupAtPoint(nearest);
+			}
+
+			return nearest;
+		},
+
+		displayCurrentLocationMarker(currentLocation) {
+			// Remove existing location marker if it exists
+			if (this.currentLocationMarker) {
+				this.currentLocationMarker.remove();
+			}
+
+			// Create a new marker and add it to the map
+			this.currentLocationMarker = new mapboxGl.Marker({
+				color: "red",
+				opacity: 0.75,
+			})
+				.setLngLat(currentLocation)
+				.addTo(this.map);
+		},
+		// showPopupAtPoint(pointFeature) {
+		// 	const { coordinates } = pointFeature.geometry;
+		// 	const lngLat = { lng: coordinates[0], lat: coordinates[1] };
+		// 	// Assuming `map` is your Mapbox instance and it's already defined in your store
+		// 	if (this.map) {
+		// 		this.map.flyTo({ center: lngLat, zoom: 15 }); // Optional: fly to the point before showing the popup
+		// 		this.addPopup({
+		// 			lngLat: lngLat,
+		// 			properties: pointFeature.properties, // assuming properties you want to show are here
+		// 		});
+		// 	}
+		// },
+
+		// showPopupAtPoint(pointFeature) {
+		// 	const { coordinates } = pointFeature.geometry;
+		// 	if (
+		// 		!coordinates ||
+		// 		coordinates.length < 2 ||
+		// 		isNaN(coordinates[0]) ||
+		// 		isNaN(coordinates[1])
+		// 	) {
+		// 		console.error("Invalid coordinates", coordinates);
+		// 		return; // 如果坐標無效，則退出函數
+		// 	}
+
+		// 	const lngLat = { lng: coordinates[0], lat: coordinates[1] };
+		// 	// Assuming `map` is your Mapbox instance and it's already defined in your store
+		// 	if (this.map) {
+		// 		this.map.flyTo({ center: lngLat, zoom: 15 }); // Optional: fly to the point before showing the popup
+		// 		this.addPopup({
+		// 			lngLat: lngLat,
+		// 			properties: pointFeature.properties, // assuming properties you want to show are here
+		// 		});
+		// 	}
+		// },
+
+		//
+
+		showPopupAtPoint(pointFeature) {
+			if (
+				!pointFeature ||
+				!pointFeature.geometry ||
+				!pointFeature.geometry.coordinates
+			) {
+				console.error(
+					"Invalid point feature or coordinates missing",
+					pointFeature
+				);
+				return;
+			}
+
+			const { coordinates } = pointFeature.geometry;
+			if (
+				coordinates.length < 2 ||
+				isNaN(coordinates[0]) ||
+				isNaN(coordinates[1])
+			) {
+				console.error("Invalid coordinates", coordinates);
+				return;
+			}
+
+			const lngLat = { lng: coordinates[0], lat: coordinates[1] };
+			console.log("Showing popup at:", lngLat);
+
+			if (this.map) {
+				// this.map.flyTo({ center: lngLat, zoom: 15 });
+				this.addPopup({
+					lngLat: lngLat,
+					properties: pointFeature.properties,
+				});
+			}
+		},
+
+		//////
 		initializeMapBox() {
 			this.map = null;
 			const MAPBOXTOKEN = import.meta.env.VITE_MAPBOXTOKEN;
@@ -91,6 +386,8 @@ export const useMapStore = defineStore("map", {
 		initializeBasicLayers() {
 			const authStore = useAuthStore();
 			if (!this.map) return;
+			//
+
 			// Taipei District Labels
 			fetch(`/mapData/taipei_town.geojson`)
 				.then((response) => response.json())
@@ -225,14 +522,81 @@ export const useMapStore = defineStore("map", {
 			});
 		},
 		// 2. Call an API to get the layer data
+		// fetchLocalGeoJson(map_config) {
+		// 	axios
+		// 		.get(`/mapData/${map_config.index}.geojson`)
+		// 		.then((rs) => {
+		// 			this.addGeojsonSource(map_config, rs.data);
+		// 		})
+		// 		.catch((e) => console.error(e));
+		// },
 		fetchLocalGeoJson(map_config) {
 			axios
 				.get(`/mapData/${map_config.index}.geojson`)
-				.then((rs) => {
-					this.addGeojsonSource(map_config, rs.data);
+				.then((response) => {
+					console.log("Loaded GeoJSON Data:", response.data); // 日誌輸出加載的數據
+					this.addGeojsonSource(map_config, response.data);
+					// if (
+					// 	this.map.getLayoutProperty(
+					// 		`${map_config.layerId}`,
+					// 		"visibility"
+					// 	) === "visible"
+					// ) {
+					this.storePoints(response.data, response.data);
+					// 	}
 				})
 				.catch((e) => console.error(e));
 		},
+
+		// storePoints(data) {
+		// 	const features = data.features.filter(
+		// 		(feature) => feature.geometry.type === "circle"
+		// 	);
+		// 	console.log("Filtered Point Features:", features); // 日誌輸出篩選後的點特徵
+		// 	this.allPoints.push(
+		// 		...features.map((feature) => ({
+		// 			type: feature.type,
+		// 			coordinates: feature.geometry.coordinates,
+		// 			properties: feature.properties,
+		// 			sourceLayerId: sourceLayerId, // 存储来源图层 ID 以便后续操作
+		// 		}))
+		// 	);
+		// },
+
+		// storePoints(data, layerId) {
+		// 	const features = data.features.filter(
+		// 		(feature) => feature.geometry.type === "Point"
+		// 	);
+		// 	console.log("Filtered Point Features:", features); // 日誌輸出篩選後的點特徵
+		// 	this.allPoints.push(
+		// 		...features.map((feature) => {
+		// 			const pointData = {
+		// 				type: feature.type,
+		// 				coordinates: feature.geometry.coordinates,
+		// 				properties: feature.properties,
+		// 				sourceLayerId: layerId,
+		// 			};
+		// 			console.log("Storing Point Data:", pointData); // 日誌輸出即將存儲的點數據
+		// 			return pointData;
+		// 		})
+		// 	);
+		// },
+
+		storePoints(data, layerId) {
+			const features = data.features.filter(
+				(feature) => feature.geometry.type === "Point"
+			);
+			this.allPoints.push(
+				...features.map((feature) => ({
+					type: feature.type,
+					coordinates: feature.geometry.coordinates, // Directly use the coordinates array
+					properties: feature.properties,
+					sourceLayerId: layerId, // Store source layer ID for reference
+				}))
+			);
+			console.log("Stored Points Data:", this.allPoints); // Log the stored points data for verification
+		},
+
 		// 3-1. Add a local geojson as a source in mapbox
 		addGeojsonSource(map_config, data) {
 			if (!["voronoi", "isoline"].includes(map_config.type)) {
@@ -564,9 +928,14 @@ export const useMapStore = defineStore("map", {
 		//  5. Turn on the visibility for a exisiting map layer
 		turnOnMapLayerVisibility(mapLayerId) {
 			this.map.setLayoutProperty(mapLayerId, "visibility", "visible");
+			const layerData = this.map.getSource(`${mapLayerId}-source`)._data;
+			if (layerData && layerData.features) {
+				this.storePoints(layerData);
+			}
 		},
 		// 6. Turn off the visibility of an exisiting map layer but don't remove it completely
 		turnOffMapLayerVisibility(map_config) {
+			this.removePopup();
 			map_config.forEach((element) => {
 				let mapLayerId = `${element.index}-${element.type}`;
 				this.loadingLayers = this.loadingLayers.filter(
@@ -583,6 +952,10 @@ export const useMapStore = defineStore("map", {
 				}
 				this.currentVisibleLayers = this.currentVisibleLayers.filter(
 					(element) => element !== mapLayerId
+				);
+
+				this.allPoints = this.allPoints.filter(
+					(point) => point.sourceLayerId !== mapLayerId
 				);
 			});
 			this.removePopup();
