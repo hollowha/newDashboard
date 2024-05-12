@@ -385,7 +385,7 @@ onMounted(() => {
 		<ReportIssue />
 
 		<button @click="findAndShowNearest" class="test-button">
-			距離當前位置最近點
+			距離當前位置<br />最近點
 		</button>
 
 		<!-- <button
@@ -400,17 +400,18 @@ onMounted(() => {
 <style scoped lang="scss">
 .test-button {
 	position: fixed; /* Keeps the button fixed in position */
-	bottom: 20px; /* Distance from the bottom of the screen */
-	right: 20px; /* Distance from the left of the screen */
+	bottom: 40px; /* Distance from the bottom of the screen */
+	right: 40px; /* Distance from the left of the screen */
 	z-index: 1000; /* Ensures the button stays on top of other elements */
+	font-size: 17px;
 	background-color: var(
 		--color-highlight
 	); /* Sets the background color to blue */
 	color: white; /* Sets the text color to white */
-	height: 50px; /* Height of the button */
-	width: 100px; /* Width of the button */
-	border: none; /* No borders */
-	border-radius: 5px; /* Rounded corners */
+	height: 75px; /* Height of the button */
+	width: 120px; /* Width of the button */
+	border: 3px solid white; /* No borders */
+	border-radius: 12px; /* Rounded corners */
 }
 
 .test-button2 {

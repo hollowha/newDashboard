@@ -238,6 +238,9 @@ export const useMapStore = defineStore("map", {
 			}
 
 			// Display a marker for the current location
+			if (this.currentLocationMarker) {
+				this.currentLocationMarker.remove();
+			}
 
 			const pointsFeatureCollection = turf.featureCollection(
 				this.allPoints.map((feature) => ({
@@ -254,10 +257,6 @@ export const useMapStore = defineStore("map", {
 				turf.point(currentLocation),
 				pointsFeatureCollection
 			);
-
-			if (this.currentLocationMarker) {
-				this.currentLocationMarker.remove();
-			}
 
 			if (nearest) {
 				this.showPopupAtPoint(nearest);
@@ -318,6 +317,49 @@ export const useMapStore = defineStore("map", {
 
 		//
 
+		// showPopupAtPoint(pointFeature) {
+		// 	if (
+		// 		!pointFeature ||
+		// 		!pointFeature.geometry ||
+		// 		!pointFeature.geometry.coordinates
+		// 	) {
+		// 		console.error(
+		// 			"Invalid point feature or coordinates missing",
+		// 			pointFeature
+		// 		);
+		// 		return;
+		// 	}
+
+		// 	const { coordinates } = pointFeature.geometry;
+		// 	if (
+		// 		coordinates.length < 2 ||
+		// 		isNaN(coordinates[0]) ||
+		// 		isNaN(coordinates[1])
+		// 	) {
+		// 		console.error("Invalid coordinates", coordinates);
+		// 		return;
+		// 	}
+
+		// 	const lngLat = { lng: coordinates[0], lat: coordinates[1] };
+
+		// 	if (this.map) {
+		// 		// Remove any existing popup
+		// 		if (this.popup) {
+		// 			this.popup.remove();
+		// 			this.popup = null; // Optional, depends on your popup management logic
+		// 		}
+
+		// 		// Optional: Fly to the point
+		// 		// this.map.flyTo({ center: lngLat, zoom: 15 });
+
+		// 		// Add a new popup
+		// 		this.popup = this.addPopup({
+		// 			lngLat: lngLat,
+		// 			properties: pointFeature.properties,
+		// 		});
+		// 	}
+		// },
+
 		showPopupAtPoint(pointFeature) {
 			if (
 				!pointFeature ||
@@ -344,14 +386,22 @@ export const useMapStore = defineStore("map", {
 			const lngLat = { lng: coordinates[0], lat: coordinates[1] };
 
 			if (this.map) {
+				// Remove any existing popup
+				if (this.popup) {
+					this.popup.remove();
+					this.popup = null; // Optional, depends on your popup management logic
+				}
+
+				// Optional: Fly to the point
 				// this.map.flyTo({ center: lngLat, zoom: 15 });
-				this.addPopup({
+
+				// Add a new popup
+				this.popup = this.addPopup({
 					lngLat: lngLat,
 					properties: pointFeature.properties,
 				});
 			}
 		},
-
 		//////
 		initializeMapBox() {
 			this.map = null;
@@ -924,7 +974,6 @@ export const useMapStore = defineStore("map", {
 		},
 		// 6. Turn off the visibility of an exisiting map layer but don't remove it completely
 		turnOffMapLayerVisibility(map_config) {
-			this.removePopup();
 			map_config.forEach((element) => {
 				let mapLayerId = `${element.index}-${element.type}`;
 				this.loadingLayers = this.loadingLayers.filter(
@@ -943,17 +992,17 @@ export const useMapStore = defineStore("map", {
 					(element) => element !== mapLayerId
 				);
 
-				this.allPoints = this.allPoints.filter(
-					(point) => point.sourceLayerId !== mapLayerId
-				);
+				this.allPoints = [];
+
+				this.removePopup();
 			});
-			this.removePopup();
 		},
 
 		/* Popup Related Functions */
 		// 1. Adds a popup when the user clicks on a item. The event will be passed in.
 		addPopup(event) {
 			// Gets the info that is contained in the coordinates that the user clicked on (only visible layers)
+
 			const clickFeatureDatas = this.map.queryRenderedFeatures(
 				event.point,
 				{
@@ -964,6 +1013,12 @@ export const useMapStore = defineStore("map", {
 			if (!clickFeatureDatas || clickFeatureDatas.length === 0) {
 				return;
 			}
+
+			if (this.popup) {
+				this.popup.remove();
+				this.popup = null;
+			}
+
 			// Parse clickFeatureDatas to get the first 3 unique layer datas, skip over already included layers
 			const mapConfigs = [];
 			const parsedPopupContent = [];
