@@ -7,7 +7,6 @@ import { DashboardComponent } from "city-dashboard-component";
 import { useDialogStore } from "../../../store/dialogStore";
 import { useAdminStore } from "../../../store/adminStore";
 import { useMapStore } from "../../../store/mapStore";
-import { useContentStore } from "../../../store/contentStore";
 
 import DialogContainer from "../DialogContainer.vue";
 import InputTags from "../../utilities/forms/InputTags.vue";

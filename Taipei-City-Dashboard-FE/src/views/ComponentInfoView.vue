@@ -66,8 +66,6 @@ function toggleFavorite(id) {
 }
 
 function toggleMapLayer(test) {
-	console.log(test[0]);
-
 	mapStore.addToMapLayerList(test[0].map_config);
 
 	// console.log(test.map_config); // Check what's being received
