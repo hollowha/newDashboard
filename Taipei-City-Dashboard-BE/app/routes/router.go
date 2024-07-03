@@ -26,6 +26,7 @@ func ConfigureRoutes() {
 	configureComponentRoutes()
 	configureDashboardRoutes()
 	configureIssueRoutes()
+	configureLikeComponent()
 
 	configureTestRoutes()
 	// test routes
@@ -130,4 +131,17 @@ func configureIssueRoutes() {
 		issueRoutes.
 			PATCH("/:id", controllers.UpdateIssueByID)
 	}
+}
+
+func configureLikeComponent() {
+	likeRoutes := RouterGroup.Group("/like")
+	likeRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	likeRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	likeRoutes.Use(middleware.IsLoggedIn())
+	{
+		likeRoutes.
+			POST("/", controllers.LikeComponentByID)
+	}
+	
+
 }
