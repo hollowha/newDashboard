@@ -138,7 +138,7 @@ func configureLikeComponent() {
 	likeRoutes := RouterGroup.Group("/like")
 	likeRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
 	likeRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
-	likeRoutes.GET("/:componentid", controllers.GetLikeComponentByID)
+	likeRoutes.GET("/:componentid", controllers.LikeComponentByID)
 	likeRoutes.Use(middleware.IsLoggedIn())
 	{
 		likeRoutes.
