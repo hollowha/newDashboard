@@ -33,11 +33,10 @@ func ConfigureRoutes() {
 	// test routes
 }
 
-
 // configureTestRoutes configures all test routes.
 func configureTestRoutes() {
-    testRoutes := RouterGroup.Group("/test")
-    testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
+	testRoutes := RouterGroup.Group("/test")
+	testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
 }
 
 func configureAuthRoutes() {
@@ -139,6 +138,7 @@ func configureLikeComponent() {
 	likeRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
 	likeRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
 	likeRoutes.GET("/:componentid", controllers.LikeComponentByID)
+	likeRoutes.GET("/order-by-likes", controllers.GetPostsOrderByLikes)
 	likeRoutes.Use(middleware.IsLoggedIn())
 	{
 		likeRoutes.
@@ -165,6 +165,6 @@ func configureCommentComponent() {
 	{
 		commentRoutes.
 			POST("/", controllers.CommentComponentByID)
-		
+
 	}
 }
