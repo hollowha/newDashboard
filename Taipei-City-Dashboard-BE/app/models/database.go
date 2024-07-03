@@ -73,7 +73,6 @@ func ConnectToDatabase(dbConfig global.DatabaseConfig) *gorm.DB {
 	return dbConn
 }
 
-
 // CloseConnects closes the connections to the specified databases.
 // It takes a variable number of database names and closes the corresponding connections.
 func CloseConnects(dbNames ...interface{}) {

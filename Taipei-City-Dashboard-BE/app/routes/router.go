@@ -29,13 +29,25 @@ func ConfigureRoutes() {
 
 	configureTestRoutes()
 	// test routes
+
+	// 新功能
+	configurePostRoutes()
 }
 
+// configurePostRoutes 配置所有與貼文相關的路由
+func configurePostRoutes() {
+	postRoutes := RouterGroup.Group("/posts")
+	postRoutes.Use(middleware.LimitAPIRequests(global.PostLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	postRoutes.Use(middleware.LimitTotalRequests(global.PostLimitTotalRequestsTimes, global.TokenExpirationDuration))
+	{
+		postRoutes.POST("/like/:id", controllers.LikePost) // 新增按讚路由
+	}
+}
 
 // configureTestRoutes configures all test routes.
 func configureTestRoutes() {
-    testRoutes := RouterGroup.Group("/test")
-    testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
+	testRoutes := RouterGroup.Group("/test")
+	testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
 }
 
 func configureAuthRoutes() {

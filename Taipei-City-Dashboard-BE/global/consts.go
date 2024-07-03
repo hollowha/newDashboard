@@ -10,6 +10,8 @@ const (
 	VERSION = "v1"
 
 	// Request api limit times and duration
+	PostLimitAPIRequestsTimes        = 1000
+	PostLimitTotalRequestsTimes      = 1000
 	AuthLimitAPIRequestsTimes        = 300
 	AuthLimitTotalRequestsTimes      = 600
 	UserLimitAPIRequestsTimes        = 100
