@@ -28,7 +28,7 @@ func ConfigureRoutes() {
 	configureIssueRoutes()
 	configureLikeComponent()
 	configureFollowComponent()
-
+	configureCommentComponent()
 	configureTestRoutes()
 	// test routes
 }
@@ -154,5 +154,17 @@ func configureFollowComponent() {
 		followRoutes.
 			POST("/", controllers.FollowComponentByID)
 		followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
+	}
+}
+func configureCommentComponent() {
+	commentRoutes := RouterGroup.Group("/comment")
+	commentRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	commentRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	commentRoutes.GET("/:componentid", controllers.GetCommentComponentByID)
+	commentRoutes.Use(middleware.IsLoggedIn())
+	{
+		commentRoutes.
+			POST("/", controllers.CommentComponentByID)
+		
 	}
 }
