@@ -27,6 +27,7 @@ func ConfigureRoutes() {
 	configureDashboardRoutes()
 	configureIssueRoutes()
 	configureLikeComponent()
+	configureFollowComponent()
 
 	configureTestRoutes()
 	// test routes
@@ -143,7 +144,15 @@ func configureLikeComponent() {
 		likeRoutes.
 			POST("/", controllers.LikeComponentByID)
 	}
-	
-	
-
+}
+func configureFollowComponent() {
+	followRoutes := RouterGroup.Group("/follow")
+	followRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	followRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	followRoutes.Use(middleware.IsLoggedIn())
+	{
+		followRoutes.
+			POST("/", controllers.FollowComponentByID)
+		followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
+	}
 }
