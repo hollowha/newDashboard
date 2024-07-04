@@ -15,6 +15,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/fvbock/endless v0.0.0-20170109170031-447134032cb6 // indirect
 	github.com/google/uuid v1.5.0 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
 )
 
 require (
