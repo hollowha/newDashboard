@@ -115,6 +115,17 @@ func FetchPostsOrderByLikes() (Response, error) {
 		dashboard.Components = append(dashboard.Components, cl.ComponentID)
 	}
 
+	// 更新 Dashboards 表中的 components 欄位
+	updateQuery := `
+		UPDATE dashboards
+		SET components = ?
+		WHERE index = 'likes-components'
+	`
+	updateResult := models.DBManager.Exec(updateQuery, dashboard.Components)
+	if updateResult.Error != nil {
+		return response, updateResult.Error
+	}
+
 	// 構建返回的數據結構
 	response.Data = AllDashboards{
 		Public: []Dashboard{
