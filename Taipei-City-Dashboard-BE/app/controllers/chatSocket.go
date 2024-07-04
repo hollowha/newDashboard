@@ -22,17 +22,13 @@ type Message struct {
 	Message  string `json:"message"`
 }
 
-
-
 func HandleConnections(c *gin.Context) {
 	ws, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		log.Fatalf("Error upgrading to websocket: %v", err)
 	}
 	defer ws.Close()
-
 	clients[ws] = true
-
 	for {
 		var msg Message
 		err := ws.ReadJSON(&msg)
@@ -50,7 +46,6 @@ func HandleMessages() {
 	for {
 		msg := <-broadcast
 		fmt.Println(msg)
-
 		for client := range clients {
 			err := client.WriteJSON(msg)
 			if err != nil {
