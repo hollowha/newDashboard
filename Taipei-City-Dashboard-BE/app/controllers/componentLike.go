@@ -1,19 +1,42 @@
 package controllers
 
 import (
+	"TaipeiCityDashboardBE/app/models"
 	"fmt"
 	"net/http"
 	"strconv"
-
-	"TaipeiCityDashboardBE/app/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lib/pq"
 )
 
 // 定義新的結構來存儲查詢結果
 type ComponentLikes struct {
 	ComponentID int64 `json:"component_id" gorm:"component_id"`
 	Likes       int64 `json:"likes" gorm:"total_likes"`
+}
+
+// 定義 Dashboard 結構
+type Dashboard struct {
+	ID         int           `json:"-" gorm:"column:id;autoincrement;primaryKey"`
+	Index      string        `json:"index" gorm:"column:index;type:varchar;unique;not null"`
+	Name       string        `json:"name" gorm:"column:name;type:varchar;not null"`
+	Components pq.Int64Array `json:"components" gorm:"column:components;type:int[]"`
+	Icon       string        `json:"icon" gorm:"column:icon;type:varchar;not null"`
+	UpdatedAt  time.Time     `json:"updated_at" gorm:"column:updated_at;type:timestamp with time zone;not null"`
+	CreatedAt  time.Time     `json:"-" gorm:"column:created_at;type:timestamp with time zone;not null"`
+}
+
+// 定義返回的數據結構
+type AllDashboards struct {
+	Public   []Dashboard `json:"public"`
+	Personal []Dashboard `json:"personal"`
+}
+
+type Response struct {
+	Data   AllDashboards `json:"data"`
+	Status string        `json:"status"`
 }
 
 func LikeComponentByID(c *gin.Context) {
@@ -67,19 +90,63 @@ func GetPostsOrderByLikes(c *gin.Context) {
 	c.JSON(http.StatusOK, posts)
 }
 
-// FetchPostsOrderByLikes 統計 users_like 中每個 component_id 的總數，並按降序排列
-func FetchPostsOrderByLikes() ([]ComponentLikes, error) {
-	var likes []ComponentLikes
+// FetchPostsOrderByLikes 獲取排序後的 Dashboard
+func FetchPostsOrderByLikes() (Response, error) {
+	var componentLikes []ComponentLikes
+	var response Response
+	var dashboard Dashboard
 
 	// 編寫 SQL 查詢來計算每個 component_id 的喜歡數並排序
 	query := `
-        SELECT component_id, COUNT(*) AS likes
+        SELECT component_id, COUNT(*) AS total_likes
         FROM users_like
         GROUP BY component_id
-        ORDER BY likes DESC
+        ORDER BY total_likes DESC
     `
 
 	// 使用 GORM 的 Raw 方法來執行查詢
-	result := models.DBManager.Raw(query).Scan(&likes)
-	return likes, result.Error
+	result := models.DBManager.Raw(query).Scan(&componentLikes)
+	if result.Error != nil {
+		return response, result.Error
+	}
+
+	// 填充 Dashboard 結構的 Components 欄位
+	for _, cl := range componentLikes {
+		dashboard.Components = append(dashboard.Components, cl.ComponentID)
+	}
+
+	// 更新 Dashboards 表中的 components 欄位
+	updateQuery := `
+		UPDATE dashboards
+		SET components = ?
+		WHERE index = 'likes-components'
+	`
+	updateResult := models.DBManager.Exec(updateQuery, dashboard.Components)
+	if updateResult.Error != nil {
+		return response, updateResult.Error
+	}
+
+	// 構建返回的數據結構
+	response.Data = AllDashboards{
+		Public: []Dashboard{
+			{
+				Index:      "likes-components",
+				Name:       "熱度排行",
+				Components: dashboard.Components,
+				Icon:       "bug_report",
+				UpdatedAt:  time.Now(),
+			},
+			{
+				Index:      "map-layers",
+				Name:       "圖資資訊",
+				Components: dashboard.Components,
+				Icon:       "public",
+				UpdatedAt:  time.Now(),
+			},
+		},
+		Personal: []Dashboard{}, // 如果有個人化的Dashboard數據，可以在這裡填充
+	}
+	response.Status = "success"
+
+	return response, nil
 }

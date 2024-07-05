@@ -31,7 +31,7 @@ func ConfigureRoutes() {
 	configureDashboardRoutes()
 	configureIssueRoutes()
 	configureLikeComponent()
-	configureFollowComponent()
+	configureFollowDashboard()
 	configureCommentComponent()
 	configureTestRoutes()
 
@@ -112,6 +112,8 @@ func configureDashboardRoutes() {
 		dashboardRoutes.
 			PATCH("/:index", controllers.UpdateDashboard).
 			DELETE("/:index", controllers.DeleteDashboard)
+		// follow dashboards
+		dashboardRoutes.POST("/:index", controllers.FollowDashboardByIndex)
 	}
 	dashboardRoutes.Use(middleware.IsSysAdm())
 	{
@@ -150,15 +152,15 @@ func configureLikeComponent() {
 			POST("/", controllers.LikeComponentByID)
 	}
 }
-func configureFollowComponent() {
+func configureFollowDashboard() {
 	followRoutes := RouterGroup.Group("/follow")
 	followRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
 	followRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
 	followRoutes.Use(middleware.IsLoggedIn())
 	{
 		followRoutes.
-			POST("/", controllers.FollowComponentByID)
-		followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
+			POST("/:index", controllers.FollowDashboardByIndex)
+		// followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
 	}
 }
 func configureCommentComponent() {
