@@ -19,9 +19,7 @@ const shareUrl = () => {
 	if (navigator.share) {
 		navigator
 			.share(shareData)
-			.then(() => {
-				console.log("Successfully shared");
-			})
+			.then(() => {})
 			.catch((error) => {
 				console.error("Something went wrong sharing the URL", error);
 			});

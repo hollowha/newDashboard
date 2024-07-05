@@ -25,7 +25,6 @@ const grabPageInfo = () => {
 	const infoJson = JSON.stringify(info, null, 2);
 
 	// 显示信息或下载
-	console.log(infoJson);
 
 	// 创建隐藏的链接元素以下载 JSON 文件
 	const blob = new Blob([infoJson], { type: "application/json" });

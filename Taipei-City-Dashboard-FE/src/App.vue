@@ -24,7 +24,6 @@ import ComponentSideBar from "./components/utilities/bars/ComponentSideBar.vue";
 import LogIn from "./components/dialogs/LogIn.vue";
 import ShareButton from "./components/social/ShareButton.vue";
 import ScreenshotButton from "./components/social/ScreenshotButton.vue";
-import InfoButton from "./components/social/InfoButton.vue";
 import VoiceButton from "./components/social/VoiceButton.vue";
 
 const authStore = useAuthStore();

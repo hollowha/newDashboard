@@ -29,13 +29,13 @@ function handleOpenSettings() {
 	dialogStore.showDialog("addEditDashboards");
 }
 
-// function toggleFavorite(id) {
-// 	if (contentStore.favorites.components.includes(id)) {
-// 		contentStore.unfavoriteComponent(id);
-// 	} else {
-// 		contentStore.favoriteComponent(id);
-// 	}
-// }
+function toggleFavorite(id) {
+	if (contentStore.favorites.components.includes(id)) {
+		contentStore.unfavoriteComponent(id);
+	} else {
+		contentStore.favoriteComponent(id);
+	}
+}
 
 // function toggleFavorite(id) {
 //   if (contentStore.favorites.components.includes(id)) {
@@ -61,25 +61,25 @@ function handleOpenSettings() {
 //   }
 // }
 
-function toggleFavorite(id) {
-	if (contentStore.favorites.components.includes(id)) {
-		// 模擬取消收藏的 API 調用
-		console.log(`Unfavoriting component with id: ${id}`);
-		// 模擬成功回應
-		setTimeout(() => {
-			console.log("Unfavorited successfully");
-			contentStore.unfavoriteComponent(id);
-		}, 250); // 模擬網絡延遲
-	} else {
-		// 模擬添加收藏的 API 調用
-		console.log(`Favoriting component with id: ${id}`);
-		// 模擬成功回應
-		setTimeout(() => {
-			console.log("Favorited successfully");
-			contentStore.favoriteComponent(id);
-		}, 250); // 模擬網絡延遲
-	}
-}
+// function toggleFavorite(id) {
+// 	if (contentStore.favorites.components.includes(id)) {
+// 		// 模擬取消收藏的 API 調用
+// 		console.log(`Unfavoriting component with id: ${id}`);
+// 		// 模擬成功回應
+// 		setTimeout(() => {
+// 			console.log("Unfavorited successfully");
+// 			contentStore.unfavoriteComponent(id);
+// 		}, 250); // 模擬網絡延遲
+// 	} else {
+// 		// 模擬添加收藏的 API 調用
+// 		console.log(`Favoriting component with id: ${id}`);
+// 		// 模擬成功回應
+// 		setTimeout(() => {
+// 			console.log("Favorited successfully");
+// 			contentStore.favoriteComponent(id);
+// 		}, 250); // 模擬網絡延遲
+// 	}
+// }
 </script>
 
 <template>
