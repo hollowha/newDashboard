@@ -15,6 +15,10 @@ onMounted(() => {
 		authStore.loginByTaipeiPass(code);
 	}
 });
+
+
+
+
 </script>
 
 <template>

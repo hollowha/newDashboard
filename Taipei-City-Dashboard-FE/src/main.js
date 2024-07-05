@@ -22,8 +22,13 @@ import { createPinia } from "pinia";
 import VueApexCharts from "vue3-apexcharts";
 import debounce from "lodash/debounce";
 
+//
+import likeButton from "./directives/likeButton"; // 新增這行
+//
 const app = createApp(App);
-
+//
+app.directive("like-button", likeButton); // 新增這行
+//
 // Add Core Packages: Vue-Router, Pinia, Apexcharts
 app.use(router);
 const pinia = createPinia();
