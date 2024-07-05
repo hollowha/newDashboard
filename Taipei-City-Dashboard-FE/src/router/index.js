@@ -24,6 +24,11 @@ const routes = [
 		redirect: "/dashboard",
 	},
 	{
+		path: "/chat",
+		name: "chat",
+		component: () => import("../views/ChatView.vue"),
+	},
+	{
 		path: "/callback",
 		name: "callback",
 		component: () => import("../views/CallBack.vue"),

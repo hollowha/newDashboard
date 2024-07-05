@@ -3,6 +3,7 @@ package app
 
 import (
 	"TaipeiCityDashboardBE/app/cache"
+	"TaipeiCityDashboardBE/app/controllers"
 	"TaipeiCityDashboardBE/app/initial"
 	"TaipeiCityDashboardBE/app/middleware"
 	"TaipeiCityDashboardBE/app/models"
@@ -26,8 +27,11 @@ func StartApplication() {
 	// 2. Initiate default Gin router with logger and recovery middleware
 	routes.Router = gin.Default()
 
+	routes.Router.GET("/ws", controllers.HandleConnections)
+
 	// 3. Add common middlewares that need to run on all routes
 	routes.Router.Use(middleware.AddCommonHeaders)
+	go controllers.HandleMessages()
 
 	// 4. Configure routes and routing groups (./router.go)
 	routes.ConfigureRoutes()

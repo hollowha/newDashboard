@@ -18,6 +18,10 @@ var (
 
 // ConfigureRoutes configures all routes for the API and sets version router groups.
 func ConfigureRoutes() {
+
+
+	
+
 	Router.Use(middleware.ValidateJWT)
 	// API routers
 	RouterGroup = Router.Group("/api/" + global.VERSION)
@@ -26,16 +30,18 @@ func ConfigureRoutes() {
 	configureComponentRoutes()
 	configureDashboardRoutes()
 	configureIssueRoutes()
-
+	configureLikeComponent()
+	configureFollowComponent()
+	configureCommentComponent()
 	configureTestRoutes()
+
 	// test routes
 }
 
-
 // configureTestRoutes configures all test routes.
 func configureTestRoutes() {
-    testRoutes := RouterGroup.Group("/test")
-    testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
+	testRoutes := RouterGroup.Group("/test")
+	testRoutes.GET("/data", controllers.GetData) // 使用 GetData 控制器
 }
 
 func configureAuthRoutes() {
@@ -129,5 +135,41 @@ func configureIssueRoutes() {
 			GET("/", controllers.GetAllIssues)
 		issueRoutes.
 			PATCH("/:id", controllers.UpdateIssueByID)
+	}
+}
+
+func configureLikeComponent() {
+	likeRoutes := RouterGroup.Group("/like")
+	likeRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	likeRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	likeRoutes.GET("/:componentid", controllers.LikeComponentByID)
+	likeRoutes.GET("/order-by-likes", controllers.GetPostsOrderByLikes)
+	likeRoutes.Use(middleware.IsLoggedIn())
+	{
+		likeRoutes.
+			POST("/", controllers.LikeComponentByID)
+	}
+}
+func configureFollowComponent() {
+	followRoutes := RouterGroup.Group("/follow")
+	followRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	followRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	followRoutes.Use(middleware.IsLoggedIn())
+	{
+		followRoutes.
+			POST("/", controllers.FollowComponentByID)
+		followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
+	}
+}
+func configureCommentComponent() {
+	commentRoutes := RouterGroup.Group("/comment")
+	commentRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	commentRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	commentRoutes.GET("/:componentid", controllers.GetCommentComponentByID)
+	commentRoutes.Use(middleware.IsLoggedIn())
+	{
+		commentRoutes.
+			POST("/", controllers.CommentComponentByID)
+
 	}
 }
