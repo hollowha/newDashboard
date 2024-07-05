@@ -154,7 +154,7 @@ func configureFollowDashboard() {
 	followRoutes.Use(middleware.IsLoggedIn())
 	{
 		followRoutes.
-			POST("?:index", controllers.FollowDashboardByIndex)
+			POST("/:index", controllers.FollowDashboardByIndex)
 		// followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
 	}
 }
