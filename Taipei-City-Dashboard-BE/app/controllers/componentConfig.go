@@ -2,6 +2,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -61,6 +62,7 @@ GET /api/v1/component/:id
 func GetComponentByID(c *gin.Context) {
 	// Get the component ID from the context
 	id, err := strconv.Atoi(c.Param("id"))
+	fmt.Println("get commponent by id", id, " hayuXDDDDD")
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Invalid component ID"})
 		return
