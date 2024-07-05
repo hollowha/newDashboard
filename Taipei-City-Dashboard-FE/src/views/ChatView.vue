@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<h1>Chat View</h1>
+		<!-- <h1>Chat View</h1> -->
 		<ChatBox />
 	</div>
 </template>

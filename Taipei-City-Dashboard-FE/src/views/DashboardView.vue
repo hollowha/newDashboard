@@ -29,18 +29,61 @@ function handleOpenSettings() {
 	dialogStore.showDialog("addEditDashboards");
 }
 
+// function toggleFavorite(id) {
+// 	if (contentStore.favorites.components.includes(id)) {
+// 		contentStore.unfavoriteComponent(id);
+// 	} else {
+// 		contentStore.favoriteComponent(id);
+// 	}
+// }
+
+// function toggleFavorite(id) {
+//   if (contentStore.favorites.components.includes(id)) {
+//     // 呼叫 API 來取消收藏
+//     axios.post('/api/unfavorite', { componentId: id })
+//       .then(response => {
+//         console.log('Unfavorited successfully:', response);
+//         contentStore.unfavoriteComponent(id);
+//       })
+//       .catch(error => {
+//         console.error('Error unfavoriting component:', error);
+//       });
+//   } else {
+//     // 呼叫 API 來添加收藏
+//     axios.post('/api/favorite', { componentId: id })
+//       .then(response => {
+//         console.log('Favorited successfully:', response);
+//         contentStore.favoriteComponent(id);
+//       })
+//       .catch(error => {
+//         console.error('Error favoriting component:', error);
+//       });
+//   }
+// }
+
 function toggleFavorite(id) {
 	if (contentStore.favorites.components.includes(id)) {
-		contentStore.unfavoriteComponent(id);
+		// 模擬取消收藏的 API 調用
+		console.log(`Unfavoriting component with id: ${id}`);
+		// 模擬成功回應
+		setTimeout(() => {
+			console.log("Unfavorited successfully");
+			contentStore.unfavoriteComponent(id);
+		}, 250); // 模擬網絡延遲
 	} else {
-		contentStore.favoriteComponent(id);
+		// 模擬添加收藏的 API 調用
+		console.log(`Favoriting component with id: ${id}`);
+		// 模擬成功回應
+		setTimeout(() => {
+			console.log("Favorited successfully");
+			contentStore.favoriteComponent(id);
+		}, 250); // 模擬網絡延遲
 	}
 }
 </script>
 
 <template>
 	<!-- 1. If the dashboard is map-layers -->
-	<div style="height: 100px">我想在這裡追蹤特定主題</div>
 	<div
 		v-if="contentStore.currentDashboard.index === 'map-layers'"
 		class="dashboard"

@@ -3,7 +3,7 @@
 <!-- This component has two modes "expanded" and "collapsed" which is controlled by the prop "expanded" -->
 
 <script setup>
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../../../store/authStore";
 
@@ -30,21 +30,60 @@ const linkActiveOrNot = computed(() => {
 	}
 	return route.query.index === props.index ? true : false;
 });
+
+// 定義按鈕狀態
+const isFavorited = ref(false);
+
+// 切換按鈕狀態的函數
+const toggleFavorite = () => {
+	isFavorited.value = !isFavorited.value;
+};
+
+// 跳轉到指定URL的函數
+const goToURL = () => {
+	window.location.href =
+		"https://chatgpt.com/g/g-IvGrrKzg0-tai-bei-zhan-zheng-fang-wei-yi-biao-ban-zhu-li";
+};
 </script>
 
 <template>
-  <router-link
-    :to="tabLink"
-    :class="{ sidebartab: true, 'sidebartab-active': linkActiveOrNot }"
-  >
-    <span>{{ icon }}</span>
-    <h3 v-if="expanded">
-      {{ title }}
-    </h3>
-  </router-link>
+	<div class="sidebar-item">
+		<router-link
+			:to="tabLink"
+			:class="{ sidebartab: true, 'sidebartab-active': linkActiveOrNot }"
+		>
+			<span>{{ icon }}</span>
+			<h3 v-if="expanded">
+				{{ title }}
+			</h3>
+		</router-link>
+		<!-- 將按鈕移出 router-link 並在父元素中進行佈局 -->
+		<button @click="toggleFavorite">
+			<span class="fav" :class="{ 'fav-active': isFavorited }"
+				>favorite</span
+			>
+		</button>
+
+		<button v-if="title == '防戰及應變'" @click="goToURL">
+			<span class="fav" :class="{ 'fav-active': isFavorited }">chat</span>
+		</button>
+	</div>
 </template>
 
 <style scoped lang="scss">
+.sidebar-item {
+	display: flex;
+	align-items: center;
+}
+.fav {
+	font-family: var(--dashboardcomponent-font-icon);
+	padding: var(--font-s);
+}
+
+.fav-active {
+	color: rgb(255, 65, 44);
+}
+
 .sidebartab {
 	max-height: var(--font-xl);
 	display: flex;

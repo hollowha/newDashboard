@@ -6,6 +6,7 @@ import { useContentStore } from "../../../store/contentStore";
 import { useDialogStore } from "../../../store/dialogStore";
 import { useMapStore } from "../../../store/mapStore";
 import { useAuthStore } from "../../../store/authStore";
+import { useRouter } from "vue-router"; // 引入 useRouter
 
 import SideBarTab from "../miscellaneous/SideBarTab.vue";
 
@@ -13,7 +14,7 @@ const contentStore = useContentStore();
 const dialogStore = useDialogStore();
 const mapStore = useMapStore();
 const authStore = useAuthStore();
-
+const router = useRouter(); // 初始化 useRouter
 // The expanded state is also stored in localstorage to retain the setting after refresh
 const isExpanded = ref(true);
 
@@ -30,6 +31,10 @@ function toggleExpand() {
 	}
 }
 
+function navigateToChat() {
+	router.push("/chat"); // 路由跳轉到 /chat
+}
+
 onMounted(() => {
 	const storedExpandedState = localStorage.getItem("isExpanded");
 	if (storedExpandedState === "false") {
@@ -41,84 +46,100 @@ onMounted(() => {
 </script>
 
 <template>
-  <div
-    :class="{
-      sidebar: true,
-      'sidebar-collapse': !isExpanded,
-      'hide-if-mobile': true,
-    }"
-  >
-    <div v-if="authStore.token">
-      <h2>{{ isExpanded ? `我的最愛` : `最愛` }}</h2>
-      <SideBarTab
-        icon="favorite"
-        title="收藏組件"
-        :expanded="isExpanded"
-        :index="contentStore.favorites?.index"
-      />
-      <div class="sidebar-sub-add">
-        <h2>{{ isExpanded ? `個人儀表板 ` : `個人` }}</h2>
-        <button
-          v-if="isExpanded"
-          @click="handleOpenAddDashboard"
-        >
-          <span>add_circle_outline</span>新增
-        </button>
-      </div>
-      <div
-        v-if="
-          contentStore.personalDashboards.filter(
-            (item) => item.icon !== 'favorite'
-          ).length === 0
-        "
-        class="sidebar-sub-no"
-      >
-        <p>{{ isExpanded ? `尚無個人儀表板 ` : `尚無` }}</p>
-      </div>
-      <SideBarTab
-        v-for="item in contentStore.personalDashboards.filter(
-          (item) => item.icon !== 'favorite'
-        )"
-        :key="item.index"
-        :icon="item.icon"
-        :title="item.name"
-        :index="item.index"
-        :expanded="isExpanded"
-      />
-    </div>
-    <h2>{{ isExpanded ? `公共儀表板 ` : `公共` }}</h2>
-    <SideBarTab
-      v-for="item in contentStore.publicDashboards.filter(
-        (item) => item.index !== 'map-layers'
-      )"
-      :key="item.index"
-      :icon="item.icon"
-      :title="item.name"
-      :index="item.index"
-      :expanded="isExpanded"
-    />
-    <h2>{{ isExpanded ? `基本地圖圖層` : `圖層` }}</h2>
-    <SideBarTab
-      icon="public"
-      title="圖資資訊"
-      :expanded="isExpanded"
-      index="map-layers"
-    />
+	<div
+		:class="{
+			sidebar: true,
+			'sidebar-collapse': !isExpanded,
+			'hide-if-mobile': true,
+		}"
+	>
+		<div v-if="authStore.token">
+			<h2>{{ isExpanded ? `我的最愛` : `最愛` }}</h2>
+			<SideBarTab
+				icon="favorite"
+				title="收藏組件"
+				:expanded="isExpanded"
+				:index="contentStore.favorites?.index"
+			/>
+			<div class="sidebar-sub-add">
+				<h2>{{ isExpanded ? `個人儀表板 ` : `個人` }}</h2>
+				<button v-if="isExpanded" @click="handleOpenAddDashboard">
+					<span>add_circle_outline</span>新增
+				</button>
+			</div>
+			<div
+				v-if="
+					contentStore.personalDashboards.filter(
+						(item) => item.icon !== 'favorite'
+					).length === 0
+				"
+				class="sidebar-sub-no"
+			>
+				<p>{{ isExpanded ? `尚無個人儀表板 ` : `尚無` }}</p>
+			</div>
+			<SideBarTab
+				v-for="item in contentStore.personalDashboards.filter(
+					(item) => item.icon !== 'favorite'
+				)"
+				:key="item.index"
+				:icon="item.icon"
+				:title="item.name"
+				:index="item.index"
+				:expanded="isExpanded"
+			/>
+		</div>
+		<h2>{{ isExpanded ? `公共儀表板 ` : `公共` }}</h2>
+		<SideBarTab
+			v-for="item in contentStore.publicDashboards.filter(
+				(item) => item.index !== 'map-layers'
+			)"
+			:key="item.index"
+			:icon="item.icon"
+			:title="item.name"
+			:index="item.index"
+			:expanded="isExpanded"
+		/>
 
-    <button
-      class="sidebar-collapse-button"
-      @click="toggleExpand"
-    >
-      <span>{{
-        isExpanded
-          ? "keyboard_double_arrow_left"
-          : "keyboard_double_arrow_right"
-      }}</span>
-    </button>
-  </div>
+		<h2>{{ isExpanded ? `基本地圖圖層` : `圖層` }}</h2>
+		<SideBarTab
+			icon="public"
+			title="圖資資訊"
+			:expanded="isExpanded"
+			index="map-layers"
+		/>
+
+		<!-- 在這裡添加點擊事件來導航到 /chat -->
+		<button @click="navigateToChat" class="chat">
+			<h2>匿名聊天</h2>
+			<span class="chat-span">chat</span>
+		</button>
+
+		<button class="sidebar-collapse-button" @click="toggleExpand">
+			<span>{{
+				isExpanded
+					? "keyboard_double_arrow_left"
+					: "keyboard_double_arrow_right"
+			}}</span>
+		</button>
+	</div>
 </template>
 
 <style scoped lang="scss">
+.chat {
+	max-height: var(--font-xl);
+	display: flex;
+	align-items: center;
+	margin: var(--font-s) 0;
+	border-left: solid 4px transparent;
+	border-radius: 0 5px 5px 0;
+	transition: background-color 0.2s;
+	white-space: nowrap;
+	text-wrap: nowrap;
+}
+.chat-span {
+	font-family: var(--dashboardcomponent-font-icon);
+	padding: var(--font-s);
+}
 .sidebar {
 	width: 170px;
 	min-width: 170px;
