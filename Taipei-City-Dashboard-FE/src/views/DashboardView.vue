@@ -9,10 +9,12 @@ Testing: Jack Huang (Data Scientist), Ian Huang (Data Analysis Intern)
 <!-- Department of Information Technology, Taipei City Government -->
 
 <script setup>
+import axios from "axios";
 import { DashboardComponent } from "city-dashboard-component";
 import { useContentStore } from "../store/contentStore";
 import { useDialogStore } from "../store/dialogStore";
 import { useAuthStore } from "../store/authStore";
+import ChatBox from "../components/chat/ChatBox.vue";
 
 import MoreInfo from "../components/dialogs/MoreInfo.vue";
 import ReportIssue from "../components/dialogs/ReportIssue.vue";
@@ -29,13 +31,136 @@ function handleOpenSettings() {
 	dialogStore.showDialog("addEditDashboards");
 }
 
-function toggleFavorite(id) {
-	if (contentStore.favorites.components.includes(id)) {
-		contentStore.unfavoriteComponent(id);
-	} else {
-		contentStore.favoriteComponent(id);
+// function toggleFavorite(id) {
+// 	if (contentStore.favorites.components.includes(id)) {
+// 		contentStore.unfavoriteComponent(id);
+// 	} else {
+// 		contentStore.favoriteComponent(id);
+// 	}
+// }
+
+// async function toggleFavorite(id) {
+// 	try {
+// 		const response = await axios.get(
+// 			`http://localhost:8088/api/v1/like/${id}`
+// 		);
+// 		if (response.status === 200) {
+// 			if (contentStore.favorites.components.includes(id)) {
+// 				contentStore.unfavoriteComponent(id);
+// 			} else {
+// 				contentStore.favoriteComponent(id);
+// 			}
+// 		} else {
+// 			console.error(
+// 				"Failed to toggle favorite:",
+// 				response.status,
+// 				response.statusText
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.error("Error toggling favorite:", error);
+// 	}
+// }
+
+// async function toggleFavorite(id) {
+// 	try {
+// 		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+// 		const response = await axios.get(
+// 			`http://localhost:8088/api/v1/like/${id}`,
+// 			{
+// 				headers: {
+// 					Authorization: `Bearer ${jwtToken}`,
+// 				},
+// 				params: {
+// 					componentid: id,
+// 				},
+// 			}
+// 		);
+// 		if (response.status === 200) {
+// 			if (contentStore.favorites.components.includes(id)) {
+// 				contentStore.unfavoriteComponent(id);
+// 			} else {
+// 				contentStore.favoriteComponent(id);
+// 			}
+// 		} else {
+// 			console.error(
+// 				"Failed to toggle favorite:",
+// 				response.status,
+// 				response.statusText
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.error("Error toggling favorite:", error);
+// 	}
+// }
+
+// async function toggleFavorite(id) {
+// 	try {
+// 		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+// 		const formData = new FormData();
+// 		formData.append("componentid", id);
+// 		const response = await axios.get(
+// 			`http://localhost:8088/api/v1/like/${id}`,
+// 			{
+// 				data: formData,
+// 			}
+// 		);
+// 		if (response.status === 200) {
+// 			if (contentStore.favorites.components.includes(id)) {
+// 				contentStore.unfavoriteComponent(id);
+// 			} else {
+// 				contentStore.favoriteComponent(id);
+// 			}
+// 		} else {
+// 			console.error(
+// 				"Failed to toggle favorite:",
+// 				response.status,
+// 				response.statusText
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.error("Error toggling favorite:", error);
+// 	}
+// }
+
+async function toggleFavorite(id) {
+	try {
+		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+		const formData = new FormData();
+		formData.append("componentid", id);
+
+		// Authorization: `Bearer ${jwtToken}`,
+
+		const response = await axios.get(
+			`http://localhost:8088/api/v1/like/${id}`,
+			{
+				headers: {
+					"Content-Type": "multipart/form-data",
+				},
+				data: formData,
+			}
+		);
+
+		if (response.status === 200) {
+			if (contentStore.favorites.components.includes(id)) {
+				contentStore.unfavoriteComponent(id);
+			} else {
+				contentStore.favoriteComponent(id);
+			}
+		} else {
+			console.error(
+				"Failed to toggle favorite:",
+				response.status,
+				response.statusText
+			);
+		}
+	} catch (error) {
+		console.error("Error toggling favorite:", error);
 	}
 }
+
+// GET http://localhost:8088/api/v1/like/:componentid
+// GET
 
 // function toggleFavorite(id) {
 //   if (contentStore.favorites.components.includes(id)) {
@@ -148,7 +273,7 @@ function toggleFavorite(id) {
 				}
 			"
 		/>
-		<div>test_like</div>
+		<ChatBox />
 
 		<MoreInfo />
 		<ReportIssue />
