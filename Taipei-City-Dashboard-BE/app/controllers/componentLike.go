@@ -40,7 +40,7 @@ type Response struct {
 }
 
 // IsLike 函数检查指定用户是否已经对指定组件点过赞
-func IsLike(userID int, componentID int) (bool, error) {
+func IsLike(userID int, componentID int) (bool, error, int64) {
 	var count int64
 
 	// 执行 SQL 查询以检查记录是否存在
@@ -51,11 +51,11 @@ func IsLike(userID int, componentID int) (bool, error) {
     `
 	result := models.DBManager.Raw(query, userID, componentID).Scan(&count)
 	if result.Error != nil {
-		return false, result.Error
+		return false, result.Error, 0
 	}
 
 	// 如果 count 大于 0，则表示用户已经点过赞
-	return count > 0, nil
+	return count > 0, nil, count
 }
 
 // IsLikeHandler 处理检查用户是否已经点过赞的请求
@@ -73,14 +73,14 @@ func IsLikeHandler(c *gin.Context) {
 		return
 	}
 	// 调用 IsLike 函数检查点赞状态
-	isLiked, err := IsLike(userID, componentID)
+	isLiked, err, count := IsLike(userID, componentID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to check like status"})
 		return
 	}
 
 	// 返回结果
-	c.JSON(http.StatusOK, gin.H{"is_liked": isLiked})
+	c.JSON(http.StatusOK, gin.H{"is_liked": isLiked, "total_like": count})
 }
 
 func LikeComponentByID(c *gin.Context) {
