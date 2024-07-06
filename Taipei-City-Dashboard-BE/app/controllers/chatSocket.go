@@ -45,8 +45,14 @@ func HandleConnections(c *gin.Context) {
 func HandleMessages() {
 	for {
 		msg := <-broadcast
+
+		// message will come into here in mesg
+		// check the form of the messege decide whether it is the command or not
 		fmt.Println(msg)
+
+		// sent the message back to every client
 		for client := range clients {
+			// send
 			err := client.WriteJSON(msg)
 			if err != nil {
 				log.Printf("Error writing json: %v", err)
