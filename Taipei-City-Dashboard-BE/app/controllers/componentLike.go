@@ -39,12 +39,56 @@ type Response struct {
 	Status string        `json:"status"`
 }
 
+// IsLike 函数检查指定用户是否已经对指定组件点过赞
+func IsLike(userID int, componentID int) (bool, error) {
+	var count int64
+
+	// 执行 SQL 查询以检查记录是否存在
+	query := `
+        SELECT COUNT(*)
+        FROM users_like
+        WHERE user_id = ? AND component_id = ?
+    `
+	result := models.DBManager.Raw(query, userID, componentID).Scan(&count)
+	if result.Error != nil {
+		return false, result.Error
+	}
+
+	// 如果 count 大于 0，则表示用户已经点过赞
+	return count > 0, nil
+}
+
+// IsLikeHandler 处理检查用户是否已经点过赞的请求
+func IsLikeHandler(c *gin.Context) {
+	// 获取用户 ID 并转换为 int64
+	userID := c.GetInt("accountID")
+
+	// 获取组件 ID
+	componentIDStr := c.Param("componentid")
+	componentID, er := strconv.Atoi(componentIDStr)
+	fmt.Println(componentIDStr)
+	fmt.Println(componentID)
+	if er != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to check like status 1"})
+		return
+	}
+	// 调用 IsLike 函数检查点赞状态
+	isLiked, err := IsLike(userID, componentID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Unable to check like status"})
+		return
+	}
+
+	// 返回结果
+	c.JSON(http.StatusOK, gin.H{"is_liked": isLiked})
+}
+
 func LikeComponentByID(c *gin.Context) {
 
 	// Get the user ID from the context
 	userID := c.GetInt("accountID")
 	// Get the component ID from the form
-	componentIDstr := c.PostForm("componentid")
+	componentIDstr := c.Param("componentid")
 	fmt.Println(userID, " Like commponent ", componentIDstr, " <3<3<3")
 
 	// turn string to int
@@ -68,7 +112,7 @@ func LikeComponentByID(c *gin.Context) {
 		response = fmt.Sprintf("User %d withdrew like from component %d", userID, componentid)
 	}
 	// Return the success message
-	c.JSON(http.StatusOK, gin.H{"status": "success", "data": response, "likeOrNot": likeOrNot})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": response})
 }
 
 // method to modify table
