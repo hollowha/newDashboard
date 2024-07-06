@@ -45,8 +45,16 @@ func HandleConnections(c *gin.Context) {
 func HandleMessages() {
 	for {
 		msg := <-broadcast
+		// revieve the message
+		if(msg.message.startsWith("!")){
+			// is a command
+			// do something
+		}
+
+		
 		fmt.Println(msg)
 		for client := range clients {
+			// send
 			err := client.WriteJSON(msg)
 			if err != nil {
 				log.Printf("Error writing json: %v", err)
