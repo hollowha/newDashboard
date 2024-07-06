@@ -19,6 +19,14 @@ type NoResourceLocation struct {
 	theTime time.Time `json:"theTime" gorm:"time"`
 }
 
+type NoResourceLocationWithoutTime struct {
+	TheType string  `json:"theType" gorm:"type"`
+	Lat     float64 `json:"lat" gorm:"lat"`
+	Lng     float64 `json:"lng" gorm:"lng"`
+	Message string  `json:"message" gorm:"content"`
+}
+
+
 func StoreNoResourceLocation(theType string, lat float64, lng float64, message string) bool {
 	fmt.Println("-------StoreNoResourceLocation--------")
 	happenTime := time.Now()
@@ -47,17 +55,18 @@ func StoreNoResourceLocation(theType string, lat float64, lng float64, message s
 func NoResourceR(c *gin.Context) {
 	fmt.Println("-------NoResource RESTFUL--------")
 	// input as a json
-	// form: !no elec 21.1234 121.1234 here does not have eletricity
+	// {
+	// 	"theType": "WaterSource",
+	// 	"lat": 35.6895,
+	// 	"lng": 139.6917,
+	// 	"message": "No water source available here."
+	// }
 
-	var noResourceLocation NoResourceLocation
-
-	if err := c.ShouldBindJSON(&noResourceLocation); err != nil {
-		c.JSON(200, gin.H{
-			"message": "error when store no resource message",
-		})
-	}
-	fmt.Println(noResourceLocation)
-	StoreNoResourceLocation(noResourceLocation.theType, noResourceLocation.lat, noResourceLocation.lng, noResourceLocation.message)
+	var noResourceLocationWithoutTime NoResourceLocationWithoutTime
+	// bind the json to the struct
+	c.BindJSON(&noResourceLocationWithoutTime)
+	fmt.Println(noResourceLocationWithoutTime)
+	StoreNoResourceLocation(noResourceLocationWithoutTime.TheType, noResourceLocationWithoutTime.Lat, noResourceLocationWithoutTime.Lng, noResourceLocationWithoutTime.Message)
 	return
 }
 
