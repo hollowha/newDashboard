@@ -165,12 +165,18 @@ const toggleFavorite = async (id) => {
 		if (response.status === 200) {
 			isFavorited.value = response.data.is_liked;
 			console.log(`Successfully toggled like for component id: ${id}`); // 調試信息
-			// 更新本地收藏狀態
-			if (response.data.is_liked) {
-				contentStore.favoriteComponent(id);
-			} else {
-				contentStore.unfavoriteComponent(id);
-			}
+			// 在按讚之後檢查當前按讚狀態
+			await checkIfLiked(id);
+			// 更新資料
+			await axios.get(
+				`http://localhost:8088/api/v1/like/order-by-likes`,
+				{
+					headers: {
+						Authorization: `Bearer ${jwtToken}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
 		} else {
 			console.error(
 				"Failed to toggle like:",
@@ -264,7 +270,10 @@ onMounted(() => {
 
 		<MoreInfo />
 		<ReportIssue />
-		<ChatBox />
+		<ChatBox
+			class="dashboardcomponent"
+			:dashboard-index="contentStore.currentDashboard.index"
+		/>
 	</div>
 
 	<!-- <div
@@ -420,7 +429,9 @@ onMounted(() => {
 
 .dashboardcomponent {
 	position: relative;
-	width: 500px;
+	/*width: 500px;*/
 	height: 500px;
+	width: calc(100% - var(--dashboardcomponent-font-m) * 2);
+	max-width: calc(100% - var(--dashboardcomponent-font-m) * 2);
 }
 </style>

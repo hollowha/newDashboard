@@ -28,6 +28,13 @@
 
 <script>
 export default {
+	props: {
+		dashboardIndex: {
+			type: String,
+			required: false,
+			default: "0",
+		},
+	},
 	data() {
 		return {
 			ws: null,
@@ -40,7 +47,9 @@ export default {
 		this.ws = new WebSocket("ws://localhost:8088/ws");
 		this.ws.onmessage = (event) => {
 			const msg = JSON.parse(event.data);
-			this.messages.push(msg);
+			if (msg.dashboardDisplay === this.dashboardIndex) {
+				this.messages.push(msg);
+			}
 		};
 	},
 	methods: {
@@ -49,7 +58,7 @@ export default {
 				const msg = {
 					username: this.username,
 					message: this.message,
-					dashboardDisplay: "0"
+					dashboardDisplay: this.dashboardIndex,
 				};
 				this.ws.send(JSON.stringify(msg));
 				this.message = "";
@@ -64,12 +73,13 @@ export default {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	color: #fff;
 	text-align: center;
-
+	background-color: var(--dashboardcomponent-color-component-background);
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
 	border-radius: 5px;
+	padding: var(--dashboardcomponent-font-m);
 }
 
 h1 {
@@ -79,15 +89,13 @@ h1 {
 }
 
 .chat {
-	background-color: var(--dashboardcomponent-color-component-background);
 	height: 370px;
 	width: 100%;
-	max-width: 600px;
+	/*max-width: 600px;*/
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	justify-content: space-between;
-	padding: var(--dashboardcomponent-font-m);
 }
 
 .messages {

@@ -7,6 +7,7 @@ import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../../../store/authStore";
 import axios from "axios";
+import { onMounted } from "vue";
 
 const route = useRoute();
 
@@ -35,11 +36,36 @@ const linkActiveOrNot = computed(() => {
 // 定義按鈕狀態
 const isFavorited = ref(false);
 
+const checkIfFollowed = async () => {
+	try {
+		const jwtToken = authStore.token; // 假設 JWT 令牌存儲在 authStore 中
+		const response = await axios.get(
+			`http://localhost:8088/api/v1/follow/${props.index}`,
+			{
+				headers: {
+					Authorization: `Bearer ${jwtToken}`,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		if (response.status === 200) {
+			isFavorited.value = response.data.isFollow;
+		} else {
+			console.error(
+				"Failed to check if followed:",
+				response.status,
+				response.statusText
+			);
+		}
+	} catch (error) {
+		console.error("Error checking if followed:", error);
+	}
+};
+
 // 切換按鈕狀態的函數
 const toggleFavorite = async () => {
 	try {
-		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
-
+		const jwtToken = authStore.token; // 假設 JWT 令牌存儲在 authStore 中
 		const response = await axios.post(
 			`http://localhost:8088/api/v1/follow/${props.index}`,
 			null,
@@ -53,6 +79,16 @@ const toggleFavorite = async () => {
 
 		if (response.status === 200 && response.data.status === "success") {
 			isFavorited.value = response.data.follow;
+			// 呼叫 get /like/order-by-likes 來更新資料，但不用處理回傳值
+			await axios.get(
+				`http://localhost:8088/api/v1/like/order-by-likes`,
+				{
+					headers: {
+						Authorization: `Bearer ${jwtToken}`,
+						"Content-Type": "application/json",
+					},
+				}
+			);
 		} else {
 			console.error(
 				"Failed to toggle favorite:",
@@ -64,11 +100,16 @@ const toggleFavorite = async () => {
 		console.error("Error toggling favorite:", error);
 	}
 };
+
 // 跳轉到指定URL的函數
 const goToURL = () => {
 	window.location.href =
 		"https://chatgpt.com/g/g-IvGrrKzg0-tai-bei-zhan-zheng-fang-wei-yi-biao-ban-zhu-li";
 };
+
+onMounted(() => {
+	checkIfFollowed();
+});
 </script>
 
 <template>
