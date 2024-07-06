@@ -160,7 +160,7 @@ func configureFollowDashboard() {
 	{
 		followRoutes.
 			POST("/:index", controllers.FollowDashboardByIndex)
-		// followRoutes.GET("/", controllers.GetFollowComponentListByUserID)
+		followRoutes.GET("/:index", controllers.GetFollowComponentListByUserID)
 	}
 }
 func configureCommentComponent() {

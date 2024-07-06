@@ -84,7 +84,7 @@ func FollowDashboardByIndex(c *gin.Context) {
 	}
 
 	// Return the success message
-	c.JSON(http.StatusOK, gin.H{"status": "success", "response": response})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "response": response, "follow": isFollow})
 }
 
 
