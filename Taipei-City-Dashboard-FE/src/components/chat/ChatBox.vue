@@ -55,6 +55,11 @@ export default {
 				this.message = "";
 			}
 		},
+		// get the geojson data from the public/mapData folder
+		// getGeoJson(){
+
+
+		// }
 	},
 };
 </script>

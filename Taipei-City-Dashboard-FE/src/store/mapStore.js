@@ -266,6 +266,7 @@ export const useMapStore = defineStore("map", {
 		},
 
 		displayCurrentLocationMarker(currentLocation) {
+			console.log("Current Location:", currentLocation);
 			// Remove existing location marker if it exists
 			if (this.currentLocationMarker) {
 				this.currentLocationMarker.remove();
