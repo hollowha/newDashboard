@@ -8,6 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"time"
+	
 )
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
@@ -107,32 +108,21 @@ func HandleMessages() {
 			Component:        []int{5, 10, 43, 69, 7},
 			Timestamp:        time.Now(),
 		}
-
-
 		// revieve the message
 		
 		if strings.HasPrefix(msg.Message, "!") {
 			// is a command
 			// first send the command itself to the client
 			SendMessage(repMsg)
-	
-			// then process the command
-			// is an announcement or a wish
-			// start with !a or !w
-	
-			// repMsg = a function that returns the repMessage
-			// SendMessage(repMsg)
+			newRepMsg := ChatbotDistribute(repMsg)
+
+			SendMessage(newRepMsg)
 		} else {
 			// is a message
 			SendMessage(repMsg)
 		}
 		fmt.Println(msg)
-
 		fmt.Println(repMsg)
 		fmt.Println("========")
-
-		
-
-		
 	}
 }
