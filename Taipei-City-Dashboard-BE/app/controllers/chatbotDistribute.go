@@ -17,8 +17,7 @@ func ChatbotDistribute(repMsg repMessage) repMessage {
 		newRepMsg = AddTail(repMsg)
 		fmt.Println("===========add tail===========")
 		fmt.Println(repMsg)
-	}
-	if strings.HasPrefix(repMsg.Message, "!a") || strings.HasPrefix(repMsg.Message, "!w") {
+	} else if strings.HasPrefix(repMsg.Message, "!a") || strings.HasPrefix(repMsg.Message, "!w") {
 
 		// is an announcement or a wish
 		// start with !a or !w
@@ -27,12 +26,15 @@ func ChatbotDistribute(repMsg repMessage) repMessage {
 		fmt.Println("===========store db===========")
 		newRepMsg = StoreDB(repMsg)
 
-	}
-	if strings.HasPrefix(repMsg.Message, "!g"){
+	} else if strings.HasPrefix(repMsg.Message, "!g"){
 		fmt.Println("===========gemini===========")
 		newRepMsg = AskGemini(repMsg)
 		
+	} else if strings.HasPrefix(repMsg.Message, "!no"){
+		fmt.Println("===========no===========")
+		newRepMsg = NoResourceC(repMsg)
 	}
+
 
 	return newRepMsg
 
