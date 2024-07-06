@@ -150,7 +150,6 @@ const checkIfLiked = async (id) => {
 const toggleFavorite = async (id) => {
 	try {
 		const jwtToken = authStore.token; // 假設 JWT 令牌存儲在 authStore 中
-		console.log(`Toggling like for component id: ${id}`); // 調試信息
 		const response = await axios.post(
 			`http://localhost:8088/api/v1/like/${id}`,
 			{ componentid: id },
@@ -161,10 +160,8 @@ const toggleFavorite = async (id) => {
 				},
 			}
 		);
-		console.log("Response:", response.data); // 輸出返回值
 		if (response.status === 200) {
 			isFavorited.value = response.data.is_liked;
-			console.log(`Successfully toggled like for component id: ${id}`); // 調試信息
 			// 在按讚之後檢查當前按讚狀態
 			await checkIfLiked(id);
 			// 更新資料

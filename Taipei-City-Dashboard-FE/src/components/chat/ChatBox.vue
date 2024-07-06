@@ -6,11 +6,15 @@
 				<div
 					v-for="(message, index) in messages"
 					:key="index"
-					class="message"
+					:class="['message', message.type]"
 				>
+					<span class="icon" v-if="message.type !== 'message'">{{
+						message.type === "announcement"
+							? "announcement"
+							: "stars"
+					}}</span>
 					<strong>{{ message.username }}:</strong>
 					{{ message.message }}
-					{{ message }}
 				</div>
 			</div>
 			<div class="input-container">
@@ -27,6 +31,8 @@
 </template>
 
 <script>
+import { useAuthStore } from "../../store/authStore.js";
+
 export default {
 	props: {
 		dashboardIndex: {
@@ -44,6 +50,11 @@ export default {
 		};
 	},
 	created() {
+		const authStore = useAuthStore();
+		if (authStore.user && authStore.user.name) {
+			this.username = authStore.user.name;
+		}
+
 		this.ws = new WebSocket("ws://localhost:8088/ws");
 		this.ws.onmessage = (event) => {
 			const msg = JSON.parse(event.data);
@@ -69,6 +80,12 @@ export default {
 </script>
 
 <style scoped>
+.icon {
+	font-family: var(--dashboardcomponent-font-icon);
+	padding: var(--font-s);
+	font-weight: normal !important;
+}
+
 .chat-component {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	color: #fff;
@@ -112,9 +129,18 @@ h1 {
 .message {
 	margin-bottom: 10px;
 	padding: 5px;
-	background: #555;
 	border-radius: 4px;
 	color: #fff;
+}
+
+.message.announcement {
+	background-color: #228176; /* 顏色可根據需要調整 */
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+.message.wish {
+	background-color: #8c763f; /* 顏色可根據需要調整 */
 }
 
 .input-container {
