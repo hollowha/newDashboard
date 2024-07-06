@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
-
+	"TaipeiCityDashboardBE/app/models"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 )
@@ -48,8 +48,8 @@ type revMessage struct {
 // the list
 
 type repMessage struct {
-	UserDisplay       int       `json:"userDisplay" gorm:"column:user_display"`
-	DashboardDisplay  int       `json:"dashboardDisplay" gorm:"column:dashboard_display"`
+	UserDisplay       string    `json:"userDisplay" gorm:"column:user_display"`
+	DashboardDisplay  string       `json:"dashboardDisplay" gorm:"column:dashboard_display"`
 	MessageType       string    `json:"type" gorm:"column:message_type"`
 	Username          string    `json:"username" gorm:"column:user_name"`
 	Message           string    `json:"message" gorm:"column:message"`
@@ -65,6 +65,45 @@ func HandleConnections(c *gin.Context) {
 	}
 	defer ws.Close()
 	clients[ws] = true
+
+	var initialMessages []repMessage
+	table := models.DBManager.Table("rep_message")
+	if err := table.Find(&initialMessages).Error; err != nil {
+        log.Printf("Error retrieving messages from database: %v", err)
+        return
+    }
+
+	fmt.Println("start send announce message")
+	for _, msg := range initialMessages {
+		if msg.MessageType == "announcement" {
+			fmt.Printf("send announce message: %v\n", msg)
+			err = ws.WriteJSON(msg)
+			if err != nil {
+				log.Printf("Error sending initial message: %v", err)
+				ws.Close()
+				delete(clients, ws)
+				return
+			}
+
+		}
+		
+    }
+	fmt.Println("start send wish message done")
+	for _, msg := range initialMessages {
+		
+		if msg.MessageType == "wish" {
+			fmt.Printf("send wish message: %v\n", msg)
+			err = ws.WriteJSON(msg)
+			if err != nil {
+				log.Printf("Error sending initial message: %v", err)
+				ws.Close()
+				delete(clients, ws)
+				return
+			}
+		}
+    }
+	fmt.Println("send init message done")
+
 	for {
 		var msg revMessage
 		err := ws.ReadJSON(&msg)
@@ -73,8 +112,6 @@ func HandleConnections(c *gin.Context) {
 			delete(clients, ws)
 			break
 		}
-
-
 		broadcast <- msg
 
 	}
@@ -100,8 +137,8 @@ func HandleMessages() {
 
 		// Convert revMessage to repMessage before sending to the broadcast channel
 		repMsg := repMessage{
-			UserDisplay:      0,
-			DashboardDisplay: 0,
+			UserDisplay:      "0",
+			DashboardDisplay: "0",
 			MessageType:      "message",
 			Username:         msg.Username,
 			Message:          msg.Message,
