@@ -19,9 +19,6 @@ var (
 // ConfigureRoutes configures all routes for the API and sets version router groups.
 func ConfigureRoutes() {
 
-
-	
-
 	Router.Use(middleware.ValidateJWT)
 	// API routers
 	RouterGroup = Router.Group("/api/" + global.VERSION)
