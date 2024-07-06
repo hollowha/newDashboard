@@ -7,6 +7,7 @@ import (
 	"strings"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"time"
 )
 var upgrader = websocket.Upgrader{
 	CheckOrigin: func(r *http.Request) bool {
@@ -52,6 +53,7 @@ type repMessage struct {
 	Username string `json:"username"`
 	Message  string `json:"message"`
 	Component []int `json:"component"`
+	Timestamp time.Time `json:"timestamp"`
 
 }
 
@@ -103,6 +105,7 @@ func HandleMessages() {
 			Username:         msg.Username,
 			Message:          msg.Message,
 			Component:        []int{5, 10, 43, 69, 7},
+			Timestamp:        time.Now(),
 		}
 
 

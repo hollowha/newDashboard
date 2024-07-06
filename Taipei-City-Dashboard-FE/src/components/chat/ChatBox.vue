@@ -10,7 +10,7 @@
 				>
 					<strong>{{ message.username }}:</strong>
 					{{ message.message }}
-					
+					{{ message }}
 				</div>
 			</div>
 			<div class="input-container">
