@@ -39,7 +39,6 @@ const isFavorited = ref(false);
 const toggleFavorite = async () => {
 	try {
 		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
-		console.log(`Toggling favorite for component id: ${props.index}`); // 调试信息
 		const response = await axios.post(
 			`http://localhost:8088/api/v1/follow/${props.index}`,
 			null,
@@ -50,12 +49,8 @@ const toggleFavorite = async () => {
 				},
 			}
 		);
-		console.log("Response:", response.data); // 输出返回值
 		if (response.status === 200) {
 			isFavorited.value = !isFavorited.value;
-			console.log(
-				`Successfully toggled favorite for component id: ${props.index}`
-			); // 调试信息
 		} else {
 			console.error(
 				"Failed to toggle favorite:",
