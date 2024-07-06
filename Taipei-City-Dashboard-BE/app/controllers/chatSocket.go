@@ -53,7 +53,7 @@ type repMessage struct {
 	MessageType       string    `json:"type" gorm:"column:message_type"`
 	Username          string    `json:"username" gorm:"column:user_name"`
 	Message           string    `json:"message" gorm:"column:message"`
-	Component         []int     `json:"component" gorm:"column:component"`
+	// Component         []int     `json:"component" gorm:"column:component"`
 	Timestamp         time.Time `json:"timestamp" gorm:"column:upload_time"`
 }
 
@@ -105,7 +105,7 @@ func HandleMessages() {
 			MessageType:      "message",
 			Username:         msg.Username,
 			Message:          msg.Message,
-			Component:        []int{5, 10, 43, 69, 7},
+			// Component:        []int{5, 10, 43, 69, 7},
 			Timestamp:        time.Now(),
 		}
 		// revieve the message
