@@ -179,4 +179,5 @@ func configureNoResourceComponent(){
 	noResourceRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
 	noResourceRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
 	noResourceRoutes.POST("/", controllers.NoResourceR)
+	noResourceRoutes.GET("/", controllers.GetGeojson)
 }
