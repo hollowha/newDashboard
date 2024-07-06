@@ -9,6 +9,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func GetFollowOrNot(c *gin.Context) {
+	userID := c.GetInt("accountID")
+
+	daashboardIndex := c.Param("index")
+	// do query to check is following or not
+	var isFollow bool
+	err := models.DBManager.Raw("SELECT check_user_followed(?, ?)", userID, daashboardIndex).First(&isFollow).Error
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"status": "error", "message": "Failed to check user's following status"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"status": "success", "isFollow": isFollow})
+}
+
 func FollowDashboardByIndex(c *gin.Context) {
 	// Get the user ID from the context
 	userID := c.GetInt("accountID")
