@@ -10,6 +10,7 @@
 				>
 					<strong>{{ message.username }}:</strong>
 					{{ message.message }}
+					{{ message }}
 				</div>
 			</div>
 			<div class="input-container">
@@ -48,6 +49,7 @@ export default {
 				const msg = {
 					username: this.username,
 					message: this.message,
+					dashboardDisplay: "0"
 				};
 				this.ws.send(JSON.stringify(msg));
 				this.message = "";
