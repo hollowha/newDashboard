@@ -18,6 +18,8 @@ import ChatBox from "../components/chat/ChatBox.vue";
 
 import MoreInfo from "../components/dialogs/MoreInfo.vue";
 import ReportIssue from "../components/dialogs/ReportIssue.vue";
+import { ref } from "vue";
+import { onMounted } from "vue";
 
 const contentStore = useContentStore();
 const dialogStore = useDialogStore();
@@ -39,41 +41,155 @@ function handleOpenSettings() {
 // 	}
 // }
 
-async function toggleFavorite(id) {
+// async function toggleFavorite(id) {
+// 	try {
+// 		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+// 		const formData = new FormData();
+// 		formData.append("componentid", id);
+
+// 		// Authorization: `Bearer ${jwtToken}`,
+
+// 		const response = await axios.get(
+// 			`http://localhost:8088/api/v1/like/${id}`,
+// 			{
+// 				headers: {
+// 					"Content-Type": "multipart/form-data",
+// 				},
+// 				data: formData,
+// 			}
+// 		);
+
+// 		if (response.status === 200) {
+// 			if (contentStore.favorites.components.includes(id)) {
+// 				contentStore.unfavoriteComponent(id);
+// 			} else {
+// 				contentStore.favoriteComponent(id);
+// 			}
+// 		} else {
+// 			console.error(
+// 				"Failed to toggle favorite:",
+// 				response.status,
+// 				response.statusText
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.error("Error toggling favorite:", error);
+// 	}
+// }
+
+// 定義按鈕狀態
+const isFavorited = ref(false);
+
+// 切換按鈕狀態的函數
+// 切換按鈕狀態的函數
+// const toggleFavorite = async (id) => {
+// 	try {
+// 		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+// 		console.log(`Toggling like for component id: ${id}`); // 调试信息
+// 		const response = await axios.post(
+// 			`http://localhost:8088/api/v1/like/${id}`,
+// 			{ componentid: id },
+// 			{
+// 				headers: {
+// 					Authorization: `Bearer ${jwtToken}`,
+// 					"Content-Type": "application/json",
+// 				},
+// 			}
+// 		);
+// 		console.log("Response:", response.data); // 输出返回值
+// 		if (response.status === 200) {
+// 			isFavorited.value = !isFavorited.value;
+// 			console.log(`Successfully toggled like for component id: ${id}`); // 调试信息
+// 		} else {
+// 			console.error(
+// 				"Failed to toggle like:",
+// 				response.status,
+// 				response.statusText
+// 			);
+// 		}
+// 	} catch (error) {
+// 		console.error("Error toggling like:", error);
+// 	}
+// };
+
+// 定義按鈕狀態
+
+// 检查当前是否已点赞的函数
+const checkIfLiked = async (id) => {
 	try {
-		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
-		const formData = new FormData();
-		formData.append("componentid", id);
-
-		// Authorization: `Bearer ${jwtToken}`,
-
+		const jwtToken = authStore.token; // 假設 JWT 令牌存儲在 authStore 中
 		const response = await axios.get(
-			`http://localhost:8088/api/v1/like/${id}`,
+			`http://localhost:8088/api/v1/like/is-like/${id}`,
 			{
 				headers: {
-					"Content-Type": "multipart/form-data",
+					Authorization: `Bearer ${jwtToken}`,
+					"Content-Type": "application/json",
 				},
-				data: formData,
 			}
 		);
-
 		if (response.status === 200) {
-			if (contentStore.favorites.components.includes(id)) {
-				contentStore.unfavoriteComponent(id);
-			} else {
+			isFavorited.value = response.data.is_liked;
+			// 更新本地收藏狀態
+			if (response.data.is_liked) {
 				contentStore.favoriteComponent(id);
+			} else {
+				contentStore.unfavoriteComponent(id);
 			}
 		} else {
 			console.error(
-				"Failed to toggle favorite:",
+				"Failed to check if liked:",
 				response.status,
 				response.statusText
 			);
 		}
 	} catch (error) {
-		console.error("Error toggling favorite:", error);
+		console.error("Error checking if liked:", error);
 	}
-}
+};
+
+const toggleFavorite = async (id) => {
+	try {
+		const jwtToken = authStore.token; // 假設 JWT 令牌存儲在 authStore 中
+		console.log(`Toggling like for component id: ${id}`); // 調試信息
+		const response = await axios.post(
+			`http://localhost:8088/api/v1/like/${id}`,
+			{ componentid: id },
+			{
+				headers: {
+					Authorization: `Bearer ${jwtToken}`,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		console.log("Response:", response.data); // 輸出返回值
+		if (response.status === 200) {
+			isFavorited.value = response.data.is_liked;
+			console.log(`Successfully toggled like for component id: ${id}`); // 調試信息
+			// 更新本地收藏狀態
+			if (response.data.is_liked) {
+				contentStore.favoriteComponent(id);
+			} else {
+				contentStore.unfavoriteComponent(id);
+			}
+		} else {
+			console.error(
+				"Failed to toggle like:",
+				response.status,
+				response.statusText
+			);
+		}
+	} catch (error) {
+		console.error("Error toggling like:", error);
+	}
+};
+
+onMounted(() => {
+	if (contentStore.currentDashboard.components) {
+		contentStore.currentDashboard.components.forEach((component) => {
+			checkIfLiked(component.id);
+		});
+	}
+});
 
 // GET http://localhost:8088/api/v1/like/:componentid
 // GET
