@@ -23,6 +23,7 @@ var broadcast = make(chan revMessage)
 type revMessage struct {
 	Username string `json:"username"`
 	Message  string `json:"message"`
+	DashboardDisplay string `json:"dashboardDisplay"`
 }
 
 
@@ -138,7 +139,7 @@ func HandleMessages() {
 		// Convert revMessage to repMessage before sending to the broadcast channel
 		repMsg := repMessage{
 			UserDisplay:      "0",
-			DashboardDisplay: "0",
+			DashboardDisplay: msg.DashboardDisplay,
 			MessageType:      "message",
 			Username:         msg.Username,
 			Message:          msg.Message,
