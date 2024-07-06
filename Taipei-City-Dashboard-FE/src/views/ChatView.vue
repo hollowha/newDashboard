@@ -1,72 +1,7 @@
 <template>
-	<div>
-		<!-- <h1>Chat View</h1> -->
+	<div class="chat-view">
 		<ChatBox />
 	</div>
-	<!-- <DashboardComponent
-			v-for="item in contentStore.currentDashboard.components"
-			:key="item.index"
-			v-like-button="item.id"
-			:config="item"
-			:info-btn="true"
-			:delete-btn="
-				contentStore.personalDashboards
-					.map((item) => item.index)
-					.includes(contentStore.currentDashboard.index)
-			"
-			:favorite-btn="
-				authStore.token &&
-				contentStore.currentDashboard.icon !== 'favorite'
-			"
-			:is-favorite="contentStore.favorites?.components.includes(item.id)"
-			@favorite="
-				(id) => {
-					toggleFavorite(id);
-				}
-			"
-			@info="
-				(item) => {
-					dialogStore.showMoreInfo(item);
-				}
-			"
-			@delete="
-				(id) => {
-					contentStore.deleteComponent(id);
-				}
-			"
-		/> -->
-	<!-- <DashboardComponent
-		v-for="item in contentStore.currentDashboard.components"
-		v-if="item.index === 'pump_status'"
-		:key="item.index"
-		v-like-button="item.id"
-		:config="item"
-		:info-btn="true"
-		:delete-btn="
-			contentStore.personalDashboards
-				.map((item) => item.index)
-				.includes(contentStore.currentDashboard.index)
-		"
-		:favorite-btn="
-			authStore.token && contentStore.currentDashboard.icon !== 'favorite'
-		"
-		:is-favorite="contentStore.favorites?.components.includes(item.id)"
-		@favorite="
-			(id) => {
-				toggleFavorite(id);
-			}
-		"
-		@info="
-			(item) => {
-				dialogStore.showMoreInfo(item);
-			}
-		"
-		@delete="
-			(id) => {
-				contentStore.deleteComponent(id);
-			}
-		"
-	/> -->
 </template>
 
 <script>
@@ -81,5 +16,26 @@ export default {
 </script>
 
 <style>
-/* Add your custom styles here */
+/* 在 ChatBox.vue 的样式中添加以下内容 */
+.chat-component {
+	width: 100%;
+	height: 100%;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	text-align: center;
+	background-color: var(--dashboardcomponent-color-component-background);
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	border-radius: 5px;
+	padding: var(--dashboardcomponent-font-m);
+}
+
+.chat {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
 </style>

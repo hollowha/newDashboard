@@ -6,7 +6,9 @@ import { useContentStore } from "../../../store/contentStore";
 import { useDialogStore } from "../../../store/dialogStore";
 import { useMapStore } from "../../../store/mapStore";
 import { useAuthStore } from "../../../store/authStore";
-import { useRouter } from "vue-router"; // 引入 useRouter
+// import { useRouter } from "vue-router"; // 引入 useRouter
+// import ChatBox from "../../../views/ChatView.vue"; // 引入 ChatBox 组件
+// import ChatBox from "../../chat/ChatBox.vue"; // 引入 ChatBox 组件
 
 import SideBarTab from "../miscellaneous/SideBarTab.vue";
 
@@ -14,9 +16,10 @@ const contentStore = useContentStore();
 const dialogStore = useDialogStore();
 const mapStore = useMapStore();
 const authStore = useAuthStore();
-const router = useRouter(); // 初始化 useRouter
+// const router = useRouter(); // 初始化 useRouter
 // The expanded state is also stored in localstorage to retain the setting after refresh
 const isExpanded = ref(true);
+// const showChatBox = ref(false); // 控制 ChatBox 显示的状态
 
 function handleOpenAddDashboard() {
 	dialogStore.addEdit = "add";
@@ -31,9 +34,9 @@ function toggleExpand() {
 	}
 }
 
-function navigateToChat() {
-	router.push("/chat"); // 路由跳轉到 /chat
-}
+// function toggleChatBox() {
+// 	showChatBox.value = !showChatBox.value; // 切换 ChatBox 的显示状态
+// }
 
 onMounted(() => {
 	const storedExpandedState = localStorage.getItem("isExpanded");
@@ -107,12 +110,16 @@ onMounted(() => {
 			:expanded="isExpanded"
 			index="map-layers"
 		/>
-
-		<!-- 在這裡添加點擊事件來導航到 /chat -->
-		<button @click="navigateToChat" class="chat">
+		<!-- <button @click="toggleChatBox" class="chat">
 			<h2>匿名聊天</h2>
 			<span class="chat-span">chat</span>
-		</button>
+		</button> -->
+
+		<!-- 在這裡添加點擊事件來導航到 /chat -->
+		<!-- <button @click="navigateToChat" class="chat">
+			<h2>匿名聊天</h2>
+			<span class="chat-span">chat</span>
+		</button> -->
 
 		<button class="sidebar-collapse-button" @click="toggleExpand">
 			<span>{{
@@ -122,6 +129,11 @@ onMounted(() => {
 			}}</span>
 		</button>
 	</div>
+
+	<!-- 浮动 ChatBox -->
+	<!-- <div v-if="showChatBox" class="floating-chatbox">
+		<ChatBox />
+	</div> -->
 </template>
 
 <style scoped lang="scss">
@@ -222,5 +234,19 @@ onMounted(() => {
 			}
 		}
 	}
+}
+
+.floating-chatbox {
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%; /* 设置浮动窗体的宽度 */
+	height: 400px; /* 设置浮动窗体的高度 */
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* 阴影效果 */
+	border-radius: 10px; /* 圆角效果 */
+	z-index: 1000; /* 确保浮动窗体显示在最上层 */
+	border-radius: 5px;
 }
 </style>

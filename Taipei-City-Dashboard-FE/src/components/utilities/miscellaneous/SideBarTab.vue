@@ -124,14 +124,15 @@ onMounted(() => {
 			</h3>
 		</router-link>
 		<!-- 將按鈕移出 router-link 並在父元素中進行佈局 -->
-		<button @click="toggleFavorite">
-			<span class="fav" :class="{ 'fav-active': isFavorited }"
-				>favorite</span
-			>
+		<button
+			v-if="index !== 'likes-components' && index !== '78ad15ef407a'"
+			@click="toggleFavorite"
+		>
+			<span class="fav" :class="{ 'fav-active': isFavorited }">star</span>
 		</button>
 
 		<button v-if="title == '防戰及應變'" @click="goToURL">
-			<span class="fav" :class="{ 'fav-active': isFavorited }">chat</span>
+			<span class="fav">chat</span>
 		</button>
 	</div>
 </template>

@@ -1,7 +1,7 @@
 <template>
 	<div class="chat-component">
 		<div class="chat">
-			<h1>WebSocket Chat</h1>
+			<h1>聊天分享區</h1>
 			<div class="messages">
 				<div
 					v-for="(message, index) in messages"
@@ -18,13 +18,39 @@
 				</div>
 			</div>
 			<div class="input-container">
-				<input v-model="username" placeholder="Username" />
-				<input
-					v-model="message"
-					@keyup.enter="sendMessage"
-					placeholder="Message"
-				/>
-				<button @click="sendMessage">Send</button>
+				<div class="input-row">
+					<input v-model="username" placeholder="Username" />
+					<div class="select-container">
+						<select v-model="messageType">
+							<option value="message">一般訊息</option>
+							<option value="announcement">公告訊息</option>
+							<option value="wish">許願訊息</option>
+						</select>
+						<div class="icon-overlay">
+							<span
+								class="icon"
+								v-if="messageType === 'announcement'"
+								>announcement</span
+							>
+							<span class="icon" v-if="messageType === 'wish'"
+								>stars</span
+							>
+							<span class="icon" v-if="messageType === 'message'"
+								>message</span
+							>
+						</div>
+					</div>
+				</div>
+				<div class="input-row">
+					<input
+						v-model="message"
+						@keyup.enter="sendMessage"
+						placeholder="Message"
+					/>
+					<button @click="sendMessage" class="send-btn">
+						<span class="icon">send</span>
+					</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -46,6 +72,7 @@ export default {
 			ws: null,
 			username: "",
 			message: "",
+			messageType: "message",
 			messages: [],
 		};
 	},
@@ -66,20 +93,22 @@ export default {
 	methods: {
 		sendMessage() {
 			if (this.username && this.message) {
+				let formattedMessage = this.message;
+				if (this.messageType === "announcement") {
+					formattedMessage = "!a " + this.message;
+				} else if (this.messageType === "wish") {
+					formattedMessage = "!w " + this.message;
+				}
 				const msg = {
 					username: this.username,
-					message: this.message,
+					message: formattedMessage,
+					type: this.messageType,
 					dashboardDisplay: this.dashboardIndex,
 				};
 				this.ws.send(JSON.stringify(msg));
 				this.message = "";
 			}
 		},
-		// get the geojson data from the public/mapData folder
-		// getGeoJson(){
-
-
-		// }
 	},
 };
 </script>
@@ -102,6 +131,7 @@ export default {
 	align-items: center;
 	border-radius: 5px;
 	padding: var(--dashboardcomponent-font-m);
+	overflow-y: scroll;
 }
 
 h1 {
@@ -123,7 +153,7 @@ h1 {
 .messages {
 	border: 1px solid #555;
 	flex-grow: 1;
-	overflow-y: auto;
+	overflow-y: scroll;
 	margin-bottom: 10px;
 	padding: 10px;
 	border-radius: 4px;
@@ -139,22 +169,31 @@ h1 {
 }
 
 .message.announcement {
-	background-color: #228176; /* 顏色可根據需要調整 */
+	background-color: #8c763f; /* 顏色可根據需要調整 */ /* 顏色可根據需要調整 */
 	font-size: 1.2em;
 	font-weight: bold;
 }
 
 .message.wish {
-	background-color: #8c763f; /* 顏色可根據需要調整 */
+	background-color: #228176;
 }
 
 .input-container {
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	gap: 10px;
+	width: 100%;
 }
 
-input {
+.input-row {
+	display: flex;
+	flex-direction: row;
+	gap: 10px;
+	width: 100%;
+}
+
+input,
+select {
 	padding: 10px;
 	border-radius: 4px;
 	border: 1px solid #555;
@@ -170,17 +209,48 @@ input::placeholder {
 }
 
 button {
-	padding: 10px 20px;
-	border: none;
-	border-radius: 4px;
-	background: #555;
 	color: #fff;
-	font-size: 1em;
 	cursor: pointer;
 	transition: background 0.3s ease;
 }
 
 button:hover {
-	background: #777;
+	color: #85f9e7;
+}
+
+.send-btn:hover {
+	color: #85f9e7;
+}
+
+.select-container {
+	position: relative;
+	flex-grow: 1;
+	display: flex;
+	align-items: center;
+}
+
+.icon-overlay {
+	position: absolute;
+	top: 50%;
+	left: 10px;
+	transform: translateY(-50%);
+	pointer-events: none;
+	display: flex;
+	align-items: center;
+	z-index: 2;
+}
+
+select {
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+	width: 100%;
+	padding-left: 40px; /* Adjust padding to leave space for the icon */
+	position: relative;
+	z-index: 1;
+	background-color: #222;
+	color: #fff;
+	border: 1px solid #555;
+	border-radius: 4px;
 }
 </style>

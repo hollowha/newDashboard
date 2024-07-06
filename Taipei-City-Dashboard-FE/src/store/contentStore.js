@@ -1,4 +1,3 @@
- 
 /* eslint-disable indent */
 
 // Developed by Taipei Urban Intelligence Center 2023-2024
@@ -430,7 +429,7 @@ export const useContentStore = defineStore("content", {
 		},
 		// 5. Call this function to favorite a component.
 		async favoriteComponent(component_id) {
-			const dialogStore = useDialogStore();
+			// const dialogStore = useDialogStore();
 			const authStore = useAuthStore();
 
 			this.favorites.components.push(component_id);
@@ -438,7 +437,7 @@ export const useContentStore = defineStore("content", {
 			await http.patch(`/dashboard/${this.favorites.index}`, {
 				components: this.favorites.components,
 			});
-			dialogStore.showNotification("success", `成功加入收藏組件`);
+			// dialogStore.showNotification("success", `成功加入收藏組件`);
 
 			if (
 				authStore.currentPath === "dashboard" ||
@@ -449,7 +448,7 @@ export const useContentStore = defineStore("content", {
 		},
 		// 6. Call this function to unfavorite a component.
 		async unfavoriteComponent(component_id) {
-			const dialogStore = useDialogStore();
+			// const dialogStore = useDialogStore();
 			const authStore = useAuthStore();
 
 			this.favorites.components = this.favorites.components.filter(
@@ -459,7 +458,7 @@ export const useContentStore = defineStore("content", {
 			await http.patch(`/dashboard/${this.favorites.index}`, {
 				components: this.favorites.components,
 			});
-			dialogStore.showNotification("success", `成功從收藏組件移除`);
+			// dialogStore.showNotification("success", `成功從收藏組件移除`);
 			if (
 				authStore.currentPath === "dashboard" ||
 				authStore.currentPath === "mapview"

@@ -24,6 +24,7 @@ import ComponentSideBar from "./components/utilities/bars/ComponentSideBar.vue";
 import LogIn from "./components/dialogs/LogIn.vue";
 import ShareButton from "./components/social/ShareButton.vue";
 import ScreenshotButton from "./components/social/ScreenshotButton.vue";
+import ChatBox from "./components/chat/ChatBox.vue";
 // import VoiceButton from "./components/social/VoiceButton.vue";
 
 const authStore = useAuthStore();
@@ -31,6 +32,8 @@ const dialogStore = useDialogStore();
 const contentStore = useContentStore();
 
 const timeToUpdate = ref(600);
+const showChatBox = ref(false); // 控制 ChatBox 显示的状态
+const showButtons = ref(false); // 控制分享和截图按钮的显示状态
 
 const formattedTimeToUpdate = computed(() => {
 	const minutes = Math.floor(timeToUpdate.value / 60);
@@ -52,6 +55,13 @@ function updateTimeToUpdate() {
 	timeToUpdate.value -= 5;
 }
 
+function toggleChatBox() {
+	showChatBox.value = !showChatBox.value; // 切换 ChatBox 的显示状态
+}
+
+function toggleButtons() {
+	showButtons.value = !showButtons.value; // 切换分享和截图按钮的显示状态
+}
 onBeforeMount(() => {
 	authStore.initialChecks();
 
@@ -128,10 +138,30 @@ onBeforeUnmount(() => {
 		>
 			<p>下次更新：{{ formattedTimeToUpdate }}</p>
 		</div>
-		<ShareButton />
+		<!-- <ShareButton />
 		<ScreenshotButton />
-		<!-- <InfoButton /> -->
-		<!-- <VoiceButton /> -->
+
+		<button @click="toggleChatBox" class="chat">
+			<h2>匿名聊天</h2>
+			<span class="chat-span">chat</span>
+		</button> -->
+		<!-- 浮動 ChatBox -->
+		<div class="button-container">
+			<button @click="toggleButtons" class="main-button">
+				<h2>聊天&分享</h2>
+				<span class="icon">menu</span>
+			</button>
+			<div v-if="showButtons" class="secondary-buttons">
+				<button @click="toggleChatBox" class="secondary-button">
+					<span class="icon">chat</span>
+				</button>
+				<ScreenshotButton class="secondary-button" />
+				<ShareButton class="secondary-button" />
+			</div>
+		</div>
+		<div v-if="showChatBox" class="floating-chatbox">
+			<ChatBox />
+		</div>
 	</div>
 </template>
 
@@ -174,5 +204,90 @@ onBeforeUnmount(() => {
 			opacity: 1;
 		}
 	}
+}
+
+.button-container {
+	position: fixed;
+	bottom: 20px;
+	right: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	z-index: 1000;
+
+	.main-button {
+		background-color: var(--color-highlight);
+		color: white;
+		padding: 10px;
+		border-radius: 50%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+		transition: background-color 0.3s;
+		cursor: pointer;
+		width: 60px;
+		height: 60px;
+		border: 2px solid white; /* 白色边框 */
+
+		h2 {
+			display: none;
+		}
+
+		&:hover {
+			background-color: lightblue; /* 浅蓝色 */
+		}
+
+		.icon {
+			font-family: var(--font-icon);
+			font-size: var(--font-xl);
+		}
+	}
+
+	.secondary-buttons {
+		display: flex;
+		flex-direction: column;
+		margin-top: 10px;
+
+		.secondary-button {
+			background-color: var(--color-component-background);
+			color: white;
+			padding: 10px;
+			border-radius: 50%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+			transition: background-color 0.3s;
+			cursor: pointer;
+			width: 50px;
+			height: 50px;
+			margin-bottom: 10px;
+			border: 2px solid white; /* 白色边框 */
+
+			&:hover {
+				background-color: black; /* 深黑色 */
+			}
+
+			.icon {
+				font-family: var(--font-icon);
+				font-size: var(--font-l);
+			}
+		}
+	}
+}
+
+.floating-chatbox {
+	position: fixed;
+	bottom: 20px;
+	right: 90px;
+	width: 400px; /* 設定浮動視窗的寬度 */
+	height: auto; /* 設定浮動視窗的高度 */
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* 陰影效果 */
+	border-radius: 10px; /* 圓角效果 */
+	z-index: 1000; /* 確保浮動視窗顯示在最上層 */
+	overflow-y: scroll;
+	border: 2px solid #ffffff;
+	background-color: var(--color-component-background);
 }
 </style>

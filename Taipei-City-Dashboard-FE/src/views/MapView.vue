@@ -400,8 +400,8 @@ onMounted(() => {
 <style scoped lang="scss">
 .test-button {
 	position: fixed; /* Keeps the button fixed in position */
-	bottom: 40px; /* Distance from the bottom of the screen */
-	right: 40px; /* Distance from the left of the screen */
+	top: 140px; /* Distance from the bottom of the screen */
+	right: 90px; /* Distance from the left of the screen */
 	z-index: 1000; /* Ensures the button stays on top of other elements */
 	font-size: 17px;
 	background-color: var(
@@ -410,7 +410,7 @@ onMounted(() => {
 	color: white; /* Sets the text color to white */
 	height: 75px; /* Height of the button */
 	width: 120px; /* Width of the button */
-	border: 3px solid white; /* No borders */
+	border: 2px solid white; /* No borders */
 	border-radius: 12px; /* Rounded corners */
 }
 

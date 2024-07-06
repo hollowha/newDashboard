@@ -427,7 +427,7 @@ onMounted(() => {
 .dashboardcomponent {
 	position: relative;
 	/*width: 500px;*/
-	height: 500px;
+	height: 370px;
 	width: calc(100% - var(--dashboardcomponent-font-m) * 2);
 	max-width: calc(100% - var(--dashboardcomponent-font-m) * 2);
 }

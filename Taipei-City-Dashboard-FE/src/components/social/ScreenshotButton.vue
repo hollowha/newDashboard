@@ -1,6 +1,6 @@
 <template>
 	<div class="screenshot-button" @click="downloadScreenshot">
-		<span>Download Screenshot</span>
+		<span>截圖</span>
 	</div>
 </template>
 
