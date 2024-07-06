@@ -40,6 +40,7 @@ type Response struct {
 }
 
 func LikeComponentByID(c *gin.Context) {
+
 	// Get the user ID from the context
 	userID := c.GetInt("accountID")
 	// Get the component ID from the form
@@ -67,7 +68,7 @@ func LikeComponentByID(c *gin.Context) {
 		response = fmt.Sprintf("User %d withdrew like from component %d", userID, componentid)
 	}
 	// Return the success message
-	c.JSON(http.StatusOK, gin.H{"status": "success", "data": response})
+	c.JSON(http.StatusOK, gin.H{"status": "success", "data": response, "likeOrNot": likeOrNot})
 }
 
 // method to modify table
