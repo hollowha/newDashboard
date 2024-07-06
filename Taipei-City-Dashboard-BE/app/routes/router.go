@@ -30,6 +30,7 @@ func ConfigureRoutes() {
 	configureLikeComponent()
 	configureFollowDashboard()
 	configureCommentComponent()
+	configureNoResourceComponent()
 	configureTestRoutes()
 
 	// test routes
@@ -172,4 +173,10 @@ func configureCommentComponent() {
 			POST("/", controllers.CommentComponentByID)
 
 	}
+}
+func configureNoResourceComponent(){
+	noResourceRoutes := RouterGroup.Group("/noresource")
+	noResourceRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
+	noResourceRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
+	noResourceRoutes.POST("/", controllers.NoResourceR)
 }

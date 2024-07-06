@@ -6,7 +6,16 @@ import (
 	"strings"
 	"strconv"
 	"time"
+	"github.com/gin-gonic/gin"
 )
+
+type NoResourceLocation struct {
+	theType string `json:"theType"`
+	lat float64 `json:"lat"`
+	lng float64 `json:"lng"`
+	message string `json:"message"`
+
+}
 
 func StoreNoResourceLocation(theType string, lat float64, lng float64, message string) bool {
 	fmt.Println("-------StoreNoResourceLocation--------")
@@ -25,7 +34,28 @@ func StoreNoResourceLocation(theType string, lat float64, lng float64, message s
 	return true
 }
 
-func NoResource(repMsg repMessage) repMessage {
+// for RESTFUL API
+func NoResourceR(c *gin.Context) {
+	fmt.Println("-------NoResource RESTFUL--------")
+	// input as a json
+	// form: !no elec 21.1234 121.1234 here does not have eletricity
+	
+	var noResourceLocation NoResourceLocation
+	
+	if err := c.ShouldBindJSON(&noResourceLocation); err != nil {
+		c.JSON(200, gin.H{
+			"message": "error when store no resource message",
+		})
+	}
+	fmt.Println(noResourceLocation)
+	StoreNoResourceLocation(noResourceLocation.theType, noResourceLocation.lat, noResourceLocation.lng, noResourceLocation.message)
+	return
+}
+
+
+
+// for chatbot
+func NoResourceC(repMsg repMessage) repMessage {
 	fmt.Println("-------NoResource--------")
 	// form: !no elec 21.1234 121.1234 here does not have eletricity
 	part := strings.SplitN(repMsg.Message, " ", 5)

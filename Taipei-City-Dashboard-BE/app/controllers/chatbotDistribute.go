@@ -32,7 +32,7 @@ func ChatbotDistribute(repMsg repMessage) repMessage {
 		
 	} else if strings.HasPrefix(repMsg.Message, "!no"){
 		fmt.Println("===========no===========")
-		newRepMsg = NoResource(repMsg)
+		newRepMsg = NoResourceC(repMsg)
 	}
 
 
