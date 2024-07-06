@@ -16,7 +16,11 @@ func StoreDB(repMsg repMessage) repMessage {
 		repMsg.MessageType = "wish"
 	}
 
-	if repMsg.MessageType == "announcement" {
+	part := strings.SplitN(repMsg.Message, " ", 2)
+	
+	repMsg.Message = part[1]
+
+	if repMsg.MessageType == "announcement" || repMsg.MessageType == "wish"{
 		// TODO store db
 		table := models.DBManager.Table("rep_message")
 		// store
@@ -26,6 +30,6 @@ func StoreDB(repMsg repMessage) repMessage {
 		}
 
 	}
-
+	repMsg.Message = "have set as " + repMsg.MessageType + " message: " + repMsg.Message
 	return repMsg
 }
