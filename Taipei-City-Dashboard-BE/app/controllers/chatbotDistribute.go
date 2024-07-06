@@ -29,6 +29,11 @@ func ChatbotDistribute(repMsg repMessage) repMessage {
 		newRepMsg = StoreDB(repMsg)
 
 	}
+	if strings.HasPrefix(repMsg.Message, "!g"){
+		fmt.Println("===========gemini===========")
+		newRepMsg = AskGemini(repMsg)
+		
+	}
 
 	return newRepMsg
 
