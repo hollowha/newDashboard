@@ -142,7 +142,7 @@ func HandleMessages() {
 			DashboardDisplay: msg.DashboardDisplay,
 			MessageType:      "message",
 			Username:         msg.Username,
-			Message:          msg.Message,
+			Message:          strings.TrimSpace(msg.Message),
 			// Component:        []int{5, 10, 43, 69, 7},
 			Timestamp:        time.Now(),
 		}
