@@ -1,7 +1,7 @@
 <template>
-	<div id="chat-component">
-		<h1>WebSocket Chat</h1>
+	<div class="chat-component">
 		<div class="chat">
+			<h1>WebSocket Chat</h1>
 			<div class="messages">
 				<div
 					v-for="(message, index) in messages"
@@ -58,37 +58,39 @@ export default {
 </script>
 
 <style scoped>
-#chat-component {
+.chat-component {
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	background: #000;
 	color: #fff;
 	text-align: center;
-	padding: 20px;
-	height: 100vh;
+
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
+	border-radius: 5px;
 }
 
 h1 {
-	font-size: 2em;
-	margin-bottom: 20px;
+	font-size: 1.5em; /* 調整標題大小，使其在較小的高度下更適合 */
+	margin-bottom: 10px;
 	color: #fff;
 }
 
 .chat {
-	background: #333;
-	border-radius: 8px;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+	background-color: var(--dashboardcomponent-color-component-background);
+	height: 370px;
 	width: 100%;
 	max-width: 600px;
-	padding: 20px;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: space-between;
+	padding: var(--dashboardcomponent-font-m);
 }
 
 .messages {
 	border: 1px solid #555;
-	height: 300px;
+	flex-grow: 1;
 	overflow-y: auto;
 	margin-bottom: 10px;
 	padding: 10px;

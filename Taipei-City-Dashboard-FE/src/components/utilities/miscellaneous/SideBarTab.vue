@@ -51,8 +51,8 @@ const toggleFavorite = async () => {
 			}
 		);
 		console.log("Response:", response.data); // 输出返回值
-		if (response.status === 200) {
-			isFavorited.value = !isFavorited.value;
+		if (response.status === 200 && response.data.status === "success") {
+			isFavorited.value = response.data.follow;
 			console.log(
 				`Successfully toggled favorite for component id: ${props.index}`
 			); // 调试信息

@@ -39,90 +39,6 @@ function handleOpenSettings() {
 // 	}
 // }
 
-// async function toggleFavorite(id) {
-// 	try {
-// 		const response = await axios.get(
-// 			`http://localhost:8088/api/v1/like/${id}`
-// 		);
-// 		if (response.status === 200) {
-// 			if (contentStore.favorites.components.includes(id)) {
-// 				contentStore.unfavoriteComponent(id);
-// 			} else {
-// 				contentStore.favoriteComponent(id);
-// 			}
-// 		} else {
-// 			console.error(
-// 				"Failed to toggle favorite:",
-// 				response.status,
-// 				response.statusText
-// 			);
-// 		}
-// 	} catch (error) {
-// 		console.error("Error toggling favorite:", error);
-// 	}
-// }
-
-// async function toggleFavorite(id) {
-// 	try {
-// 		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
-// 		const response = await axios.get(
-// 			`http://localhost:8088/api/v1/like/${id}`,
-// 			{
-// 				headers: {
-// 					Authorization: `Bearer ${jwtToken}`,
-// 				},
-// 				params: {
-// 					componentid: id,
-// 				},
-// 			}
-// 		);
-// 		if (response.status === 200) {
-// 			if (contentStore.favorites.components.includes(id)) {
-// 				contentStore.unfavoriteComponent(id);
-// 			} else {
-// 				contentStore.favoriteComponent(id);
-// 			}
-// 		} else {
-// 			console.error(
-// 				"Failed to toggle favorite:",
-// 				response.status,
-// 				response.statusText
-// 			);
-// 		}
-// 	} catch (error) {
-// 		console.error("Error toggling favorite:", error);
-// 	}
-// }
-
-// async function toggleFavorite(id) {
-// 	try {
-// 		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
-// 		const formData = new FormData();
-// 		formData.append("componentid", id);
-// 		const response = await axios.get(
-// 			`http://localhost:8088/api/v1/like/${id}`,
-// 			{
-// 				data: formData,
-// 			}
-// 		);
-// 		if (response.status === 200) {
-// 			if (contentStore.favorites.components.includes(id)) {
-// 				contentStore.unfavoriteComponent(id);
-// 			} else {
-// 				contentStore.favoriteComponent(id);
-// 			}
-// 		} else {
-// 			console.error(
-// 				"Failed to toggle favorite:",
-// 				response.status,
-// 				response.statusText
-// 			);
-// 		}
-// 	} catch (error) {
-// 		console.error("Error toggling favorite:", error);
-// 	}
-// }
-
 async function toggleFavorite(id) {
 	try {
 		// const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
@@ -161,50 +77,6 @@ async function toggleFavorite(id) {
 
 // GET http://localhost:8088/api/v1/like/:componentid
 // GET
-
-// function toggleFavorite(id) {
-//   if (contentStore.favorites.components.includes(id)) {
-//     // 呼叫 API 來取消收藏
-//     axios.post('/api/unfavorite', { componentId: id })
-//       .then(response => {
-//         console.log('Unfavorited successfully:', response);
-//         contentStore.unfavoriteComponent(id);
-//       })
-//       .catch(error => {
-//         console.error('Error unfavoriting component:', error);
-//       });
-//   } else {
-//     // 呼叫 API 來添加收藏
-//     axios.post('/api/favorite', { componentId: id })
-//       .then(response => {
-//         console.log('Favorited successfully:', response);
-//         contentStore.favoriteComponent(id);
-//       })
-//       .catch(error => {
-//         console.error('Error favoriting component:', error);
-//       });
-//   }
-// }
-
-// function toggleFavorite(id) {
-// 	if (contentStore.favorites.components.includes(id)) {
-// 		// 模擬取消收藏的 API 調用
-// 		console.log(`Unfavoriting component with id: ${id}`);
-// 		// 模擬成功回應
-// 		setTimeout(() => {
-// 			console.log("Unfavorited successfully");
-// 			contentStore.unfavoriteComponent(id);
-// 		}, 250); // 模擬網絡延遲
-// 	} else {
-// 		// 模擬添加收藏的 API 調用
-// 		console.log(`Favoriting component with id: ${id}`);
-// 		// 模擬成功回應
-// 		setTimeout(() => {
-// 			console.log("Favorited successfully");
-// 			contentStore.favoriteComponent(id);
-// 		}, 250); // 模擬網絡延遲
-// 	}
-// }
 </script>
 
 <template>
@@ -273,10 +145,10 @@ async function toggleFavorite(id) {
 				}
 			"
 		/>
-		<ChatBox />
 
 		<MoreInfo />
 		<ReportIssue />
+		<ChatBox />
 	</div>
 
 	<!-- <div
