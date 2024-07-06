@@ -29,18 +29,12 @@ func StoreNoResourceLocation(theType string, lat float64, lng float64, message s
 	// happenTime: just the time
 
 	fmt.Println(happenTime)
+	query := `
+		INSERT INTO public.report (content, type, "time", lng, lat)
+		VALUES (?, ?, ?, ?, ?)
+	`
+	result := models.DBDashboard.Exec(query, message, theType, happenTime, lng, lat)
 
-	// 创建一个 NoResourceLocation 实例并填充数据
-	report := NoResourceLocation{
-		theType: theType,
-		lat:     lat,
-		lng:     lng,
-		message: message,
-		theTime: happenTime,
-	}
-
-	// 使用 GORM 将数据插入到数据库中
-	result := models.DBDashboard.Table("report").Create(&report)
 	if result.Error != nil {
 		fmt.Println("Error inserting data:", result.Error)
 		return false
