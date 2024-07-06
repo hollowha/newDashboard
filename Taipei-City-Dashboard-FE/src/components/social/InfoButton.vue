@@ -40,12 +40,12 @@ const grabPageInfo = () => {
 	position: fixed;
 	bottom: 100px;
 	left: 20px;
-	background-color: #007bff;
+	background-color: #515151;
 	color: white;
 	padding: 10px 20px;
 	border-radius: 50px;
 	cursor: pointer;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -55,6 +55,6 @@ const grabPageInfo = () => {
 }
 
 .info-button:hover {
-	background-color: #0056b3;
+	background-color: #515151;
 }
 </style>

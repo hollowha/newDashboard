@@ -6,6 +6,7 @@
 import { ref, computed } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../../../store/authStore";
+import axios from "axios";
 
 const route = useRoute();
 
@@ -35,10 +36,37 @@ const linkActiveOrNot = computed(() => {
 const isFavorited = ref(false);
 
 // 切換按鈕狀態的函數
-const toggleFavorite = () => {
-	isFavorited.value = !isFavorited.value;
+const toggleFavorite = async () => {
+	try {
+		const jwtToken = authStore.token; // 假设 JWT 令牌存储在 authStore 中
+		console.log(`Toggling favorite for component id: ${props.index}`); // 调试信息
+		const response = await axios.post(
+			`http://localhost:8088/api/v1/follow/${props.index}`,
+			null,
+			{
+				headers: {
+					Authorization: `Bearer ${jwtToken}`,
+					"Content-Type": "application/json",
+				},
+			}
+		);
+		console.log("Response:", response.data); // 输出返回值
+		if (response.status === 200) {
+			isFavorited.value = !isFavorited.value;
+			console.log(
+				`Successfully toggled favorite for component id: ${props.index}`
+			); // 调试信息
+		} else {
+			console.error(
+				"Failed to toggle favorite:",
+				response.status,
+				response.statusText
+			);
+		}
+	} catch (error) {
+		console.error("Error toggling favorite:", error);
+	}
 };
-
 // 跳轉到指定URL的函數
 const goToURL = () => {
 	window.location.href =

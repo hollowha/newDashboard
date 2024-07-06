@@ -157,8 +157,8 @@ func configureFollowDashboard() {
 	followRoutes.Use(middleware.IsLoggedIn())
 	{
 		followRoutes.
-			POST("/:index", controllers.FollowDashboardByIndex)
-		followRoutes.GET("/:index", controllers.GetFollowComponentListByUserID)
+			POST("/:index", controllers.FollowDashboardByIndex).
+			GET("/:index", controllers.GetFollowOrNot)
 	}
 }
 func configureCommentComponent() {
