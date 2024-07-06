@@ -19,9 +19,6 @@ var (
 // ConfigureRoutes configures all routes for the API and sets version router groups.
 func ConfigureRoutes() {
 
-
-	
-
 	Router.Use(middleware.ValidateJWT)
 	// API routers
 	RouterGroup = Router.Group("/api/" + global.VERSION)
@@ -144,7 +141,8 @@ func configureLikeComponent() {
 	likeRoutes := RouterGroup.Group("/like")
 	likeRoutes.Use(middleware.LimitAPIRequests(global.IssueLimitAPIRequestsTimes, global.LimitRequestsDuration))
 	likeRoutes.Use(middleware.LimitTotalRequests(global.IssueLimitTotalRequestsTimes, global.LimitRequestsDuration))
-	likeRoutes.GET("/:componentid", controllers.LikeComponentByID)
+	likeRoutes.POST("/:componentid", controllers.LikeComponentByID)
+	likeRoutes.GET("/is-like/:componentid", controllers.IsLikeHandler)
 	likeRoutes.GET("/order-by-likes", controllers.GetPostsOrderByLikes)
 	likeRoutes.Use(middleware.IsLoggedIn())
 	{
