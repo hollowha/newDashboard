@@ -28,7 +28,7 @@ type Geojson struct {
 }
 type GeoFeature struct {
 	Type	string `json:"type"`
-	Geometry GeoGeometries `json:"geometry`
+	Geometry GeoGeometries `json:"geometry"`
 	Properties	GeoProperties `json:"properties"`
 }
 type GeoGeometries struct {
