@@ -395,9 +395,9 @@ onMounted(() => {
 			距離當前位置<br />最近點
 		</button>
 
-		<button @click="reportBoxToggle" class="test-button2">
+		<!-- <button @click="reportBoxToggle" class="test-button2">
 			地點異常回報
-		</button>
+		</button> -->
 
 		<!-- 新增報告表單的浮動視窗 -->
 		<div v-if="showReportBox" class="report-box">
