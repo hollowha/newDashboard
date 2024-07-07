@@ -23,8 +23,8 @@ import (
 
 // }
 type Geojson struct {
-	Type	string
-	Features []GeoFeature
+	Type	string `json:"type"`
+	Features []GeoFeature	`json:"features"`
 }
 type GeoFeature struct {
 	Type	string `json:"type"`
@@ -42,10 +42,10 @@ type GeoProperties struct {
 	Time 	time.Time	`json:"time" gorm:"column:time"`
 }
 func GetGeojson(c *gin.Context) {
-	str := GetGeojsonStr()
+	str := GetGeojsonStr(c)
 	c.JSON(200, str)
 }
-func GetGeojsonStr() string {
+func GetGeojsonStr(c *gin.Context) string {
     var reports []NoResourceLocation
 
     // 执行查询
@@ -100,6 +100,6 @@ func GetGeojsonStr() string {
         fmt.Printf("Error marshalling GeoJSON: %v\n", err)
         return ""
     }
-
+	c.JSON(200, geojson)
     return string(geojsonString)
 }
