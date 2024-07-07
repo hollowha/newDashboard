@@ -563,10 +563,13 @@ export const useMapStore = defineStore("map", {
 				appendLayer.layerId = mapLayerId;
 				// 1-2. If the layer doesn't exist, call an API to get the layer data
 				this.loadingLayers.push(appendLayer.layerId);
+				console.log(element.source, "get element source")
 				if (element.source === "geojson") {
 					this.fetchLocalGeoJson(appendLayer);
 				} else if (element.source === "raster") {
 					this.addRasterSource(appendLayer);
+				} else if(element.source === "backend") {
+					this.getBackendGeoJson(appendLayer);
 				}
 			});
 		},
@@ -585,6 +588,20 @@ export const useMapStore = defineStore("map", {
 				.then((response) => {
 					this.addGeojsonSource(map_config, response.data);
 					this.storePoints(response.data, response.data);
+				})
+				.catch((e) => console.error(e));
+		},
+		getBackendGeoJson(map_config) {
+			console.log("BB@ND GeoJSON Data:"); // 日誌輸出 GeoJSON 數據
+			axios
+				.get(`http://localhost:8088/api/v1/noresource`)
+				.then((response) => {
+					// turn respose.data from string to json
+					console.log(response.data)
+					geoj = JSON.parse(response.data);
+					console.log("BB@ND GeoJSON Data:", geoj); // 日誌輸出 GeoJSON 數據
+					// this.addGeojsonSource(map_config, geoj);
+					// this.storePoints(geoj, geoj);
 				})
 				.catch((e) => console.error(e));
 		},
