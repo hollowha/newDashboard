@@ -78,7 +78,6 @@
 
 <script>
 import { useAuthStore } from "../../store/authStore.js";
-import * as marked from "marked";
 
 export default {
 	props: {
@@ -136,12 +135,12 @@ export default {
 				} else {
 					this.isLoading = true;
 					this.addToConversationHistory("user", formattedMessage);
-					this.displayMessage(formattedMessage, this.username, false);
+					this.displayMessage(formattedMessage, this.username);
 					const aiResponse = await this.sendAIMessage(
 						formattedMessage
 					);
 					this.addToConversationHistory("ai", aiResponse);
-					this.displayMessage(aiResponse, "AI", true);
+					this.displayMessage(aiResponse, "AI");
 					this.isLoading = false;
 				}
 				this.message = "";
@@ -199,10 +198,10 @@ export default {
 				return "AI 服務無法使用。";
 			}
 		},
-		displayMessage(message, sender, isMarkdown) {
+		displayMessage(message, sender) {
 			const messageElement = {
 				username: sender,
-				message: isMarkdown ? marked.parse(message) : message,
+				message: message,
 				type: sender === "AI" ? "ai" : this.messageType,
 			};
 			this.messages.push(messageElement);
