@@ -41,6 +41,8 @@ SITCON Hackathon 2024 成果發表範例
 我們提供了開發後台直接渲染地圖，並提供資料 JSON 與 CSV 下載的預覽，讓開發者可以在私密的環境中測試組件：
 - 組件地圖預覽
 - JSON 和 CSV 預覽
+
+- 
 投影片:https://www.canva.com/design/DAGKN7T0f_o/v3g3_K8h9hTHTovsleKxew/edit?utm_content=DAGKN7T0f_o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
 ### 展示資料
 為了使儀表板更吸引人，我們設計了以戰爭為主題的可視化資料展示，分為初期避難、中期應變、後期存活三部分，希望藉此打破儀表板資料較為不吸引人的僵局，成為儀表板的招牌。
