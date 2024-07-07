@@ -148,7 +148,7 @@ export default {
 				this.fetchCurrentLocation();
 			}
 		},
-		resourceType(newValue) {
+		resourceType() {
 			this.updateMessage();
 		},
 	},
@@ -161,7 +161,6 @@ export default {
 						const { latitude, longitude } = position.coords;
 						this.currentLatLng = `${latitude} ${longitude}`;
 						this.updateMessage();
-						console.log("Current location: ", latitude, longitude);
 					},
 					(error) => {
 						console.error("Geolocation error: ", error);
