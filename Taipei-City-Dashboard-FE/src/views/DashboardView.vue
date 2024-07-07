@@ -127,6 +127,18 @@ const checkIfLiked = async (id) => {
 				},
 			}
 		);
+
+		// const testPost = await axios.post(
+		// 	"http://localhost:8088/api/v1/noresource",
+		// 	{
+		// 		theType: "elec",
+		// 		lat: 23.213,
+		// 		lng: 65.32588,
+		// 		message: "please please please",
+		// 	}
+		// );
+		// console.log("~~~~~~~~~~~~testPost", testPost);
+
 		if (response.status === 200) {
 			isFavorited.value = response.data.is_liked;
 			// 更新本地收藏狀態

@@ -33,6 +33,7 @@
 							<option value="announcement">公告訊息</option>
 							<option value="wish">許願訊息</option>
 							<option value="ai">AI聊天</option>
+							<option value="report">異常回報</option>
 						</select>
 						<div class="icon-overlay">
 							<span
@@ -50,10 +51,36 @@
 							<span class="icon" v-if="messageType === 'ai'"
 								>smart_toy</span
 							>
+							<span class="icon" v-if="messageType === 'report'"
+								>report</span
+							>
 						</div>
 					</div>
 				</div>
-				<div class="input-row">
+				<div v-if="messageType === 'report'">
+					<select v-model="resourceType" class="select-container">
+						<option value="elec">電力</option>
+						<option value="water">水源</option>
+						<option value="gas">天然氣</option>
+						<option value="road">道路</option>
+						<option value="other">其他</option>
+					</select>
+					<input
+						v-model="message"
+						class="input-row"
+						@keyup.enter="sendMessage"
+						placeholder="Message"
+						:disabled="isLoading && messageType === 'ai'"
+					/>
+					<button
+						@click="sendMessage"
+						class="send-btn"
+						:disabled="isLoading && messageType === 'ai'"
+					>
+						<span class="icon">send</span>
+					</button>
+				</div>
+				<div class="input-row" v-else>
 					<input
 						v-model="message"
 						@keyup.enter="sendMessage"
@@ -96,8 +123,11 @@ export default {
 			messages: [],
 			conversationHistory: [],
 			isLoading: false,
+			resourceType: "elec", // 新增的變數
+			currentLatLng: "", // 新增的變數
 		};
 	},
+
 	created() {
 		const authStore = useAuthStore();
 		if (authStore.user && authStore.user.name) {
@@ -112,7 +142,43 @@ export default {
 			}
 		};
 	},
+	watch: {
+		messageType(newValue) {
+			if (newValue === "report") {
+				this.fetchCurrentLocation();
+			}
+		},
+		resourceType(newValue) {
+			this.updateMessage();
+		},
+	},
+
 	methods: {
+		async fetchCurrentLocation() {
+			if ("geolocation" in navigator) {
+				navigator.geolocation.getCurrentPosition(
+					(position) => {
+						const { latitude, longitude } = position.coords;
+						this.currentLatLng = `${latitude} ${longitude}`;
+						this.updateMessage();
+						console.log("Current location: ", latitude, longitude);
+					},
+					(error) => {
+						console.error("Geolocation error: ", error);
+						this.currentLatLng = "32.2323 4343.4343"; // fallback to fake coordinates
+						this.updateMessage();
+					}
+				);
+			} else {
+				this.currentLatLng = "32.2323 4343.4343"; // fallback to fake coordinates
+				this.updateMessage();
+			}
+		},
+		updateMessage() {
+			if (this.messageType === "report") {
+				this.message = `detail-here`;
+			}
+		},
 		async sendMessage() {
 			if (this.isLoading && this.messageType === "ai") return;
 			if (this.username && this.message) {
@@ -121,6 +187,8 @@ export default {
 					formattedMessage = "!a " + this.message;
 				} else if (this.messageType === "wish") {
 					formattedMessage = "!w " + this.message;
+				} else if (this.messageType === "report") {
+					formattedMessage = `!no ${this.resourceType} ${this.currentLatLng} ${this.message}`;
 				}
 
 				const msg = {
@@ -146,6 +214,10 @@ export default {
 				this.message = "";
 			}
 		},
+		// 其他方法保持不變
+
+		// 其他方法保持不變
+
 		addToConversationHistory(role, text) {
 			this.conversationHistory.push({
 				role: role,
@@ -179,10 +251,10 @@ export default {
 											請你簡短回答這次訊息: ${message} 之前對話紀錄如下：${JSON.stringify(
 												this.conversationHistory
 											)}
-											
-											
-											
-											
+
+
+
+
 											`,
 										},
 									],
@@ -208,6 +280,7 @@ export default {
 		},
 	},
 };
+// !no elec 32.2323 4343.4343 auto generate
 </script>
 
 <style scoped>

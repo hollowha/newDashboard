@@ -20,6 +20,7 @@ import { useMapStore } from "../store/mapStore";
 import MapContainer from "../components/map/MapContainer.vue";
 import MoreInfo from "../components/dialogs/MoreInfo.vue";
 import ReportIssue from "../components/dialogs/ReportIssue.vue";
+import reportBox from "../components/social/reportBox.vue";
 
 const contentStore = useContentStore();
 const dialogStore = useDialogStore();
@@ -28,6 +29,12 @@ const mapStore = useMapStore();
 const currentPosition = ref(null);
 
 // Separate components with maps from those without
+const showReportBox = ref(false);
+
+function reportBoxToggle() {
+	showReportBox.value = !showReportBox.value;
+}
+
 const parseMapLayers = computed(() => {
 	const hasMap = contentStore.currentDashboard.components?.filter(
 		(item) => item.map_config[0]
@@ -388,6 +395,15 @@ onMounted(() => {
 			距離當前位置<br />最近點
 		</button>
 
+		<button @click="reportBoxToggle" class="test-button2">
+			地點異常回報
+		</button>
+
+		<!-- 新增報告表單的浮動視窗 -->
+		<div v-if="showReportBox" class="report-box">
+			<reportBox @close="reportBoxToggle" />
+		</div>
+
 		<!-- <button
 			@click="mapStore.displayCurrentLocationMarker(currentPosition)"
 			class="test-button2"
@@ -398,6 +414,18 @@ onMounted(() => {
 </template>
 
 <style scoped lang="scss">
+.report-box {
+	position: fixed;
+	top: 50%;
+	right: 10%;
+	transform: translate(-50%, -50%);
+	width: 300px;
+	border-radius: 8px;
+	box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+	z-index: 2000;
+	padding: 20px;
+}
+
 .test-button {
 	position: fixed; /* Keeps the button fixed in position */
 	top: 140px; /* Distance from the bottom of the screen */
@@ -416,17 +444,18 @@ onMounted(() => {
 
 .test-button2 {
 	position: fixed; /* Keeps the button fixed in position */
-	bottom: 20px; /* Distance from the bottom of the screen */
-	right: 100px; /* Distance from the left of the screen */
+	top: 300px; /* Distance from the bottom of the screen */
+	right: 90px; /* Distance from the left of the screen */
 	z-index: 1000; /* Ensures the button stays on top of other elements */
+	font-size: 17px;
 	background-color: var(
 		--color-highlight
 	); /* Sets the background color to blue */
 	color: white; /* Sets the text color to white */
-	height: 50px; /* Height of the button */
-	width: 100px; /* Width of the button */
-	border: none; /* No borders */
-	border-radius: 5px; /* Rounded corners */
+	height: 75px; /* Height of the button */
+	width: 120px; /* Width of the button */
+	border: 2px solid white; /* No borders */
+	border-radius: 12px; /* Rounded corners */
 }
 
 .map {
