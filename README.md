@@ -1,35 +1,52 @@
-# <img src='Taipei-City-Dashboard-FE/src/assets/images/TUIC.svg' height='28'> Taipei City Dashboard
+# 公創新世代儀表板
+SITCON Hackathon 2024 成果發表範例
 
-## Introduction
+## 公創新世代:智慧城市
+公創新世代儀表板是由台北市智慧中心開發的一個數據可視化平台。我們的主題是“公創新世代”，這不僅僅是提高公眾參與與創新功能，更重要的是如何讓公眾從使用儀表板到認為儀表板實用，實現從“可用”到“實用”的轉變。
 
-Taipei City Dashboard is a data visualization platform developed by [Taipei Urban Intelligence Center (TUIC)](https://tuic.gov.taipei/en).
+團隊名稱：{ 會贏喔 }
+成員姓名：{曾詮淳}, {陳恩}, {余欣鴻}, {劉浩元}
+競賽議題：{公創新世代}
+子議題：{智慧城市 X 臺北市政府資訊局}
+## 主要特色
 
-Our main goal is to create a comprehensive data visualization tool to assist in Taipei City policy decisions. This was achieved through the first version of the Taipei City Dashboard, which displayed a mix of internal and open data, seamlessly blending statistical and geographical data.
+### 即時性
+在資訊爆炸的年代，即時性是儀表板的重要特性。為了解決傳統儀表板缺乏即時性的問題，我們提供了多種定位功能，使使用者知道這些資料不是遠在天邊，而是近在眼前：
+- 移動到當前位置 GPS
+- 離自己最近的點
+- 地點問題回報
 
-Fast forward to mid-2023, as Taipei City’s open data ecosystem matured and expanded, our vision gradually expanded as well. We aimed not only to aid policy decisions but also to keep citizens informed about the important statistics of their city. Given the effectiveness of this tool, we also hoped to publicize the codebase for this project so that any relevant organization could easily create a similar data visualization tool of their own.
+### 互動性
+有了即時性後，互動性是我們的另一個重點。我們設計了公共聊天頻道與儀表板專欄頻道，提供使用者交流的機會，同時設計了許願池模式、公告模式和 Gemini 聊天機器人模式：
+- 公共聊天頻道：提供使用者對使用者、使用者對開發者、使用者對機器人的全面無障礙溝通
+- 許願池：讓使用者可以提供意見與重要資訊給開發者
+- 公告：發布重要資訊
+- Gemini 聊天機器人：解決部分即時提問
 
-Our dashboard, made yours.
+### 社群串連
+為了提高儀表板的傳閱度，我們設計了截圖與分享功能，使儀表板更易於分享：
+- 截圖功能
+- 分享功能
 
-Based on the above vision, we decided to begin development on Taipei City Dashboard 2.0. Unlike its predecessor, Taipei City Dashboard 2.0 will be a public platform instead of an internal tool. The codebase for Taipei City Dashboard will also be open-sourced, inviting all interested parties to participate in the development of this platform.
+### GPTs 訓練
+利用組件既有資訊，我們訓練了一個 GPT 模型，不僅可以發展出無限可能，還可以將受儀表板限制而無法顯示的資料型態以更好的方式展現出來：
+- GPTs：直接查看原始資料統計分析與圖表生成
 
-We have since released Taipei City Dashboard 2.0 to the general public. From now on, you will be able to suggest features and changes to Taipei City Dashboard and develop the platform alongside us. We are excited for you to join Taipei City Dashboard’s journey!
+### 使用者介面簡化
+隨著儀表板的發展，使用者介面可能變得繁雜。為此，我們添加了儀表板追蹤功能和跨儀表板的組件人氣排行，讓使用者可以快速找到自己想要的主題：
+- 儀表板追蹤功能
+- 熱門排行：透過收藏數降冪排序
 
-Please refer to the docs for the [Chinese Version](https://tuic.gov.taipei/documentation/front-end/introduction) (and click on the "switch languages" icon in the top right corner).
+### 開發者友善
+我們提供了開發後台直接渲染地圖，並提供資料 JSON 與 CSV 下載的預覽，讓開發者可以在私密的環境中測試組件：
+- 組件地圖預覽
+- JSON 和 CSV 預覽
 
-[Official Site](https://citydashboard.taipei) | [License](https://github.com/tpe-doit/Taipei-City-Dashboard/blob/main/LICENSE) | [Code of Conduct](https://github.com/tpe-doit/Taipei-City-Dashboard/blob/main/.github/CODE_OF_CONDUCT.md) | [Contribution Guide](https://tuic.gov.taipei/documentation/front-end/contribution-overview)
+- 
+投影片:https://www.canva.com/design/DAGKN7T0f_o/v3g3_K8h9hTHTovsleKxew/edit?utm_content=DAGKN7T0f_o&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+### 展示資料
+為了使儀表板更吸引人，我們設計了以戰爭為主題的可視化資料展示，分為初期避難、中期應變、後期存活三部分，希望藉此打破儀表板資料較為不吸引人的僵局，成為儀表板的招牌。
 
-## Quick Start
+## 總結
+這就是我們的公創新世代，從“可用”變為“實用”。我們期待更多的使用者參與進來，共同提升儀表板的價值。
 
-Please refer to the [Docs](https://tuic.gov.taipei/documentation/front-end/project-setup) for the quick start guide.
-
-## Documentation
-
-Check out the complete documentation for Taipei City Dashboard [here](https://tuic.gov.taipei/documentation).
-
-## Contributors
-
-Many thanks to the contributors to this project!
-
-<a href="https://github.com/tpe-doit/Taipei-City-Dashboard/graphs/contributors">
-<img src="https://contrib.rocks/image?repo=tpe-doit/Taipei-City-Dashboard" />
-</a>

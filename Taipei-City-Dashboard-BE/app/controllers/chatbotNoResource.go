@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	// "TaipeiCityDashboardBE/app/models"
 	"TaipeiCityDashboardBE/app/models"
 	"fmt"
 	"strconv"
@@ -12,11 +11,11 @@ import (
 )
 
 type NoResourceLocation struct {
-	theType string    `json:"theType" gorm:"type"`
-	lat     float64   `json:"lat" gorm:"lat"`
-	lng     float64   `json:"lng" gorm:"lng"`
-	message string    `json:"message" gorm:"content"`
-	theTime time.Time `json:"theTime" gorm:"time"`
+	message string    `json:"message" gorm:"column:content"`
+	theType string    `json:"theType" gorm:"column:type"`
+	theTime time.Time `json:"theTime" gorm:"column:time"`
+	lat     float64   `json:"lat" gorm:"column:lat"`
+	lng     float64   `json:"lng" gorm:"column:lng"`
 }
 
 type NoResourceLocationWithoutTime struct {
