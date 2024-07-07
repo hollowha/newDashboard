@@ -4,6 +4,7 @@ import (
 	"TaipeiCityDashboardBE/app/models"
 	"encoding/json"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -44,15 +45,16 @@ type GeoProperties struct {
 func GetGeojson(c *gin.Context) {
 	str := GetGeojsonStr(c)
 	c.JSON(200, str)
+	WriteGeojsonToFile(str, "report.geojson")
 }
-func GetGeojsonStr(c *gin.Context) string {
+func GetGeojsonStr(c *gin.Context) []byte {
     var reports []NoResourceLocation
 
     // 执行查询
     rows, err := models.DBDashboard.Table("report").Select("*").Rows()
     if err != nil {
         fmt.Printf("Error executing query: %v\n", err)
-        return ""
+        return nil
     }
     defer rows.Close()
 
@@ -61,7 +63,7 @@ func GetGeojsonStr(c *gin.Context) string {
         var report NoResourceLocation
         if err := rows.Scan(&report.message, &report.theType, &report.theTime, &report.lng, &report.lat); err != nil {
             fmt.Printf("Error scanning row: %v\n", err)
-            return ""
+            return nil
         }
         reports = append(reports, report)
     }
@@ -69,7 +71,7 @@ func GetGeojsonStr(c *gin.Context) string {
     // 检查是否有扫描过程中的错误
     if err := rows.Err(); err != nil {
         fmt.Printf("Error during rows iteration: %v\n", err)
-        return ""
+        return nil
     }
 
     // 转换为 GeoJSON 格式
@@ -98,8 +100,31 @@ func GetGeojsonStr(c *gin.Context) string {
     geojsonString, err := json.Marshal(geojson)
     if err != nil {
         fmt.Printf("Error marshalling GeoJSON: %v\n", err)
-        return ""
+        return nil
     }
 	c.JSON(200, geojson)
-    return string(geojsonString)
+    return geojsonString
+}
+
+func WriteGeojsonToFile(data []byte, filePath string) error {
+	// 删除文件（如果存在）
+	if _, err := os.Stat(filePath); err == nil {
+		err = os.Remove(filePath)
+		if err != nil {
+			return fmt.Errorf("could not delete old file: %v", err)
+		}
+	}
+
+	file, err := os.Create(filePath)
+	if err != nil {
+		return fmt.Errorf("could not create file: %v", err)
+	}
+	defer file.Close()
+
+	_, err = file.Write(data)
+	if err != nil {
+		return fmt.Errorf("could not write data to file: %v", err)
+	}
+
+	return nil
 }
